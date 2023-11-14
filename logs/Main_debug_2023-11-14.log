@@ -1,0 +1,13 @@
+[15:45:58] [DEBUG] [MainThread/logger.py:__init__:47] None: Timer start
+[15:45:58] [INFO] [MainThread/main.py:<module>:12] None: Logger Test
+[15:47:00] [DEBUG] [MainThread/logger.py:__init__:47] None: Timer start
+[15:47:00] [INFO] [MainThread/main.py:<module>:12] None: Logger Test
+[15:47:18] [DEBUG] [MainThread/logger.py:__init__:47] None: Timer start
+[15:47:18] [INFO] [MainThread/main.py:<module>:12] None: Logger Test
+[15:47:39] [DEBUG] [MainThread/logger.py:__init__:47] Main: Timer start
+[15:47:39] [INFO] [MainThread/main.py:<module>:12] Main: Logger Test
+[15:56:03] [DEBUG] [MainThread/logger.py:__init__:47] Main: Timer start
+[15:56:12] [DEBUG] [MainThread/logger.py:__init__:47] Main: Timer start
+[15:56:41] [DEBUG] [MainThread/logger.py:__init__:47] Logger: Timer start
+[16:03:29] [DEBUG] [MainThread/logger.py:__init__:47] Main: Timer start
+[16:03:29] [DEBUG] [MainThread/main.py:<module>:12] Main: Logger Test

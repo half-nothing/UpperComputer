@@ -1,0 +1,23 @@
+[15:47:00] [DEBUG] [MainThread/logger.py:__init__:47] None: Timer start
+[15:47:00] [DEBUG] [MainThread/serial_config_widget.py:serial_search_port:79] None: ['COM253', 'COM254']
+[15:47:18] [DEBUG] [MainThread/logger.py:__init__:47] None: Timer start
+[15:47:18] [DEBUG] [MainThread/serial_config_widget.py:serial_search_port:79] None: ['COM253', 'COM254']
+[15:47:39] [DEBUG] [MainThread/logger.py:__init__:47] SerialWidget: Timer start
+[15:47:39] [DEBUG] [MainThread/serial_config_widget.py:serial_search_port:79] SerialWidget: ['COM253', 'COM254']
+[15:47:53] [INFO] [MainThread/serial_manager.py:__init__:26] Serial-com253: com253打开成功
+[15:47:56] [DEBUG] [MainThread/serial_config_widget.py:serial_search_port:79] SerialWidget: ['COM253', 'COM254']
+[15:47:58] [INFO] [MainThread/serial_manager.py:close:37] Serial-com253: 串口com253关闭成功
+[15:56:03] [DEBUG] [MainThread/logger.py:__init__:47] SerialWidget: Timer start
+[15:56:03] [DEBUG] [MainThread/serial_config_widget.py:serial_search_port:79] SerialWidget: ['COM253', 'COM254']
+[15:56:12] [DEBUG] [MainThread/logger.py:__init__:47] SerialWidget: Timer start
+[15:56:12] [DEBUG] [MainThread/serial_config_widget.py:serial_search_port:79] SerialWidget: ['COM253', 'COM254']
+[15:56:41] [DEBUG] [MainThread/logger.py:__init__:47] Logger: Timer start
+[15:56:41] [DEBUG] [MainThread/serial_config_widget.py:serial_search_port:79] SerialWidget: ['COM253', 'COM254']
+[16:01:31] [DEBUG] [MainThread/logger.py:__init__:47] SerialWidget: Timer start
+[16:02:53] [DEBUG] [MainThread/logger.py:__init__:47] SerialWidget: Timer start
+[16:03:29] [DEBUG] [MainThread/logger.py:__init__:47] SerialWidget: Timer start
+[16:03:29] [DEBUG] [MainThread/serial_config_widget.py:serial_search_port:79] SerialWidget: ['COM253', 'COM254']
+[16:03:33] [DEBUG] [MainThread/serial_config_widget.py:serial_search_port:79] SerialWidget: ['COM253', 'COM254']
+[16:03:34] [DEBUG] [MainThread/serial_config_widget.py:serial_search_port:79] SerialWidget: ['COM253', 'COM254']
+[16:03:35] [INFO] [MainThread/serial_manager.py:__init__:26] Serial-com253: com253打开成功
+[16:03:37] [INFO] [MainThread/serial_manager.py:close:37] Serial-com253: 串口com253关闭成功

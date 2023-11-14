@@ -1,0 +1,8 @@
+[15:33:54] [INFO] [MainThread/serial_manager.py:__init__:26] Serial-com253: com253打开成功
+[15:33:54] [INFO] [MainThread/serial_manager.py:close:37] Serial-com253: 串口com253关闭成功
+[15:33:54] [INFO] [MainThread/serial_manager.py:__init__:26] Serial-com253: com253打开成功
+[15:33:55] [INFO] [MainThread/serial_manager.py:close:37] Serial-com253: 串口com253关闭成功
+[15:33:55] [INFO] [MainThread/serial_manager.py:__init__:26] Serial-com253: com253打开成功
+[15:33:55] [INFO] [MainThread/serial_manager.py:close:37] Serial-com253: 串口com253关闭成功
+[15:46:07] [INFO] [MainThread/serial_manager.py:__init__:26] Serial-com253: com253打开成功
+[15:46:09] [INFO] [MainThread/serial_manager.py:close:37] Serial-com253: 串口com253关闭成功
