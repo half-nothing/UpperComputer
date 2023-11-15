@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>200</width>
-    <height>488</height>
+    <height>471</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,7 +19,7 @@
   <property name="minimumSize">
    <size>
     <width>200</width>
-    <height>488</height>
+    <height>471</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -252,90 +252,83 @@
        </item>
       </layout>
      </item>
-     <item row="2" column="0" colspan="2">
+     <item row="1" column="0" colspan="2">
       <widget class="QPushButton" name="open_port_button">
        <property name="text">
         <string>打开串口</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="0" colspan="2">
+     <item row="2" column="0" colspan="2">
       <widget class="QCheckBox" name="no_error_after_exit">
        <property name="text">
         <string>断开不提示出错</string>
        </property>
       </widget>
      </item>
-     <item row="4" column="0" colspan="2">
+     <item row="3" column="0" colspan="2">
       <widget class="QCheckBox" name="reconnect_after_error">
        <property name="text">
         <string>出错重连</string>
        </property>
       </widget>
      </item>
-     <item row="5" column="0" colspan="2">
+     <item row="4" column="0" colspan="2">
       <widget class="QCheckBox" name="show_in_hex">
        <property name="text">
         <string>16进制显示</string>
        </property>
       </widget>
      </item>
-     <item row="6" column="0" colspan="2">
+     <item row="5" column="0" colspan="2">
       <widget class="QCheckBox" name="save_to_file">
        <property name="text">
         <string>接受数据到文件</string>
        </property>
       </widget>
      </item>
-     <item row="7" column="0" colspan="2">
+     <item row="6" column="0" colspan="2">
       <widget class="QLineEdit" name="file_path"/>
      </item>
-     <item row="8" column="0" colspan="2">
+     <item row="7" column="0" colspan="2">
       <widget class="QCheckBox" name="show_back">
        <property name="text">
         <string>回显</string>
        </property>
       </widget>
      </item>
-     <item row="9" column="0" colspan="2">
+     <item row="8" column="0" colspan="2">
       <widget class="QCheckBox" name="clear_after_send">
        <property name="text">
         <string>发送完自动清空</string>
        </property>
       </widget>
      </item>
-     <item row="10" column="0" colspan="2">
+     <item row="9" column="0" colspan="2">
       <widget class="QCheckBox" name="send_new_line">
        <property name="text">
         <string>发送新行</string>
        </property>
       </widget>
      </item>
-     <item row="11" column="0" colspan="2">
+     <item row="10" column="0" colspan="2">
       <widget class="QCheckBox" name="auto_send_back">
        <property name="text">
         <string>接受回发</string>
        </property>
       </widget>
      </item>
-     <item row="12" column="0" colspan="2">
+     <item row="11" column="0" colspan="2">
       <widget class="QPushButton" name="clear_receive_area_button">
        <property name="text">
         <string>清空接收区</string>
        </property>
       </widget>
      </item>
-     <item row="13" column="0" colspan="2">
+     <item row="12" column="0" colspan="2">
       <widget class="QPushButton" name="clear_data_button">
        <property name="text">
         <string>清空统计数据</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0" colspan="2">
-      <widget class="QPushButton" name="scan_port_button">
-       <property name="text">
-        <string>扫描串口</string>
        </property>
       </widget>
      </item>
@@ -352,8 +345,8 @@
    <slot>serial_port_option()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>103</x>
-     <y>161</y>
+     <x>113</x>
+     <y>192</y>
     </hint>
     <hint type="destinationlabel">
      <x>130</x>
@@ -362,18 +355,18 @@
    </hints>
   </connection>
   <connection>
-   <sender>scan_port_button</sender>
+   <sender>clear_receive_area_button</sender>
    <signal>clicked()</signal>
    <receiver>SerialConfigWidget</receiver>
-   <slot>serial_search_port()</slot>
+   <slot>clear_receive_data()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>52</x>
-     <y>130</y>
+     <x>114</x>
+     <y>439</y>
     </hint>
     <hint type="destinationlabel">
      <x>196</x>
-     <y>138</y>
+     <y>384</y>
     </hint>
    </hints>
   </connection>
@@ -382,5 +375,6 @@
   <signal>update_ports_signal(list)</signal>
   <slot>serial_port_option()</slot>
   <slot>serial_search_port()</slot>
+  <slot>clear_receive_data()</slot>
  </slots>
 </ui>

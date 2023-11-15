@@ -36,6 +36,12 @@ class SerialManager:
             self._logger.info(f"串口{self.port}关闭成功", f"Serial-{self.port}")
             return True
 
+    def read(self, size: int) -> bytes:
+        return self._serial.read(size)
+
+    def read_all(self) -> bytes:
+        return self._serial.read(self.waiting)
+
     def send(self, data: str) -> bool:
         if not self.open:
             self._logger.error(f"串口{self.port}未打开,无法发送数据", f"Serial-{self.port}")
@@ -54,6 +60,13 @@ class SerialManager:
                 f"Serial RtsCts: {self._serial.rtscts}\n"
                 f"Serial DsrDtr: {self._serial.dsrdtr}\n"
                 f"{self._logger.__repr__()}")
+
+    @property
+    def waiting(self):
+        try:
+            return self._serial.in_waiting
+        except SerialException:
+            return None
 
     @property
     def open(self):
