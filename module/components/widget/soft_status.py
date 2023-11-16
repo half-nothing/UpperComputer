@@ -4,6 +4,7 @@ from PyQt6.QtWidgets import QWidget
 from PyQt6.QtCore import pyqtSignal
 
 from form.generate.soft_status import Ui_SoftStatus
+from module.utils.thread_pool_manager import thread_pool
 
 
 class SoftStatus(QWidget, Ui_SoftStatus):
@@ -26,7 +27,7 @@ class SoftStatus(QWidget, Ui_SoftStatus):
     def _start_timer(self):
         self._timer = Timer(1, self._calculate_speed)
         self._timer.daemon = True
-        self._timer.start()
+        thread_pool.submit(self._timer.start)
 
     def _calculate_speed(self):
         self.send_speed_text.setText(f"{str(self._send)}字节/s")
@@ -39,14 +40,8 @@ class SoftStatus(QWidget, Ui_SoftStatus):
         self._total_send += change_value
         self._send += change_value
         self.total_send_text.setText(str(self._total_send))
-        # if time == 0:
-        #     return
-        #
 
     def receive_change(self, change_value: int):
         self._total_receive += change_value
         self._receive += change_value
         self.total_receive_text.setText(str(self._total_receive))
-        # if time == 0:
-        #     return
-        #

@@ -22,7 +22,7 @@ class SerialManager:
                               dsrdtr=dsr_dtr)
         self._logger = Logger(f"Serial_{self.port}") if logger is None else logger
         if self.open:
-            self._logger.info(f"{self.port}打开成功", f"Serial-{self.port}")
+            self._logger.info(f"{self.port}打开成功, 波特率:{self.rate}", f"Serial-{self.port}")
 
     def close(self) -> bool:
         if not self.open:
