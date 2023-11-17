@@ -20,7 +20,7 @@ class SerialManager:
         self.rate = rate
         self._serial = Serial(port, rate, byte_size, parity, stop_bits, xonxoff=xon_xoff, rtscts=rts_cts,
                               dsrdtr=dsr_dtr)
-        self._logger = Logger(f"Serial_{self.port}") if logger is None else logger
+        self._logger = Logger("SerialLogger", prefix_name=f"Serial_{self.port}") if logger is None else logger
         if self.open:
             self._logger.info(f"{self.port}打开成功, 波特率:{self.rate}", f"Serial-{self.port}")
 

@@ -29,7 +29,7 @@
    </property>
    <layout class="QGridLayout" name="gridLayout_6">
     <item row="0" column="1">
-     <widget class="QTabWidget" name="tabWidget">
+     <widget class="QTabWidget" name="main_area_widget">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
         <horstretch>0</horstretch>
@@ -51,19 +51,19 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
-         <widget class="QGroupBox" name="receive_area">
+         <widget class="QGroupBox" name="receive_data_box">
           <property name="title">
            <string>接收区</string>
           </property>
           <layout class="QGridLayout" name="gridLayout">
            <item row="0" column="0">
-            <widget class="QPlainTextEdit" name="receive_text"/>
+            <widget class="QPlainTextEdit" name="receive_data_plain_edit"/>
            </item>
           </layout>
          </widget>
         </item>
         <item>
-         <widget class="QTabWidget" name="send_area">
+         <widget class="QTabWidget" name="send_data_box">
           <property name="currentIndex">
            <number>0</number>
           </property>
@@ -73,7 +73,7 @@
            </attribute>
            <layout class="QGridLayout" name="gridLayout_7">
             <item row="1" column="0">
-             <widget class="QCheckBox" name="single_send_in_hex">
+             <widget class="QCheckBox" name="single_send_in_hex_check_box">
               <property name="text">
                <string>十六进制发送</string>
               </property>
@@ -86,7 +86,7 @@
              </widget>
             </item>
             <item row="1" column="4">
-             <widget class="QPushButton" name="single_send">
+             <widget class="QPushButton" name="single_send_button">
               <property name="enabled">
                <bool>false</bool>
               </property>
@@ -109,17 +109,17 @@
              </spacer>
             </item>
             <item row="1" column="3">
-             <widget class="QPushButton" name="single_clear">
+             <widget class="QPushButton" name="single_clear_button">
               <property name="text">
                <string>清空</string>
               </property>
              </widget>
             </item>
             <item row="0" column="0" colspan="6">
-             <widget class="QPlainTextEdit" name="single_send_text"/>
+             <widget class="QPlainTextEdit" name="single_send_text_plain_edit"/>
             </item>
             <item row="1" column="1">
-             <widget class="QCheckBox" name="encoding_in_gbk">
+             <widget class="QCheckBox" name="encoding_in_gbk_check_box">
               <property name="text">
                <string>GBK编码</string>
               </property>
@@ -136,20 +136,20 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="electromagnetism">
-       <attribute name="title">
-        <string>电磁组</string>
-       </attribute>
-      </widget>
       <widget class="QWidget" name="camera">
        <attribute name="title">
         <string>摄像头组</string>
        </attribute>
       </widget>
+      <widget class="QWidget" name="electromagnetism">
+       <attribute name="title">
+        <string>电磁组</string>
+       </attribute>
+      </widget>
      </widget>
     </item>
-    <item row="4" column="0" colspan="2">
-     <widget class="QGroupBox" name="groupBox_2">
+    <item row="1" column="0" colspan="2">
+     <widget class="QGroupBox" name="soft_status_box">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
         <horstretch>0</horstretch>
@@ -198,7 +198,7 @@
      </widget>
     </item>
     <item row="0" column="0">
-     <widget class="QGroupBox" name="groupBox">
+     <widget class="QGroupBox" name="data_connect_box">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
         <horstretch>0</horstretch>
@@ -206,95 +206,32 @@
        </sizepolicy>
       </property>
       <property name="title">
-       <string>连接配置</string>
+       <string>数据接口</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_5">
-       <item row="0" column="0">
-        <layout class="QGridLayout" name="gridLayout_4">
-         <item row="0" column="0">
-          <widget class="QLabel" name="label">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-             <horstretch>3</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>20</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>12</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string notr="true">连接类型:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QComboBox" name="connect_config_select">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-             <horstretch>4</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>20</height>
-            </size>
-           </property>
-           <property name="currentText">
-            <string>串口</string>
-           </property>
-           <property name="placeholderText">
-            <string/>
-           </property>
-           <item>
-            <property name="text">
-             <string>串口</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>UDP</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>TCP</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="1" column="0">
-        <widget class="QWidget" name="widget" native="true">
+       <item row="16" column="0">
+        <widget class="QPushButton" name="clear_receive_area_button">
          <property name="enabled">
           <bool>true</bool>
          </property>
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
+         <property name="text">
+          <string>清空接收区</string>
          </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777214</width>
-           <height>16777214</height>
-          </size>
+        </widget>
+       </item>
+       <item row="13" column="0">
+        <widget class="QCheckBox" name="save_to_file_check_box">
+         <property name="text">
+          <string>接受数据到文件</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout_3">
+        </widget>
+       </item>
+       <item row="0" column="0" rowspan="2">
+        <widget class="QGroupBox" name="connect_config_box">
+         <property name="title">
+          <string>连接配置</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_8">
           <property name="leftMargin">
            <number>0</number>
           </property>
@@ -307,14 +244,8 @@
           <property name="bottomMargin">
            <number>0</number>
           </property>
-          <property name="horizontalSpacing">
-           <number>0</number>
-          </property>
-          <property name="verticalSpacing">
-           <number>4</number>
-          </property>
-          <item row="0" column="0">
-           <widget class="QStackedWidget" name="connect_config">
+          <item row="1" column="0">
+           <widget class="QStackedWidget" name="connect_config_stack_widget">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -324,7 +255,7 @@
             <property name="minimumSize">
              <size>
               <width>200</width>
-              <height>453</height>
+              <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
@@ -341,7 +272,127 @@
             <widget class="TCPConfigWidget" name="tcp_config"/>
            </widget>
           </item>
+          <item row="0" column="0">
+           <layout class="QGridLayout" name="config_type_layout">
+            <item row="0" column="0">
+             <widget class="QLabel" name="connect_config_label">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>3</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string notr="true">连接类型:</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QComboBox" name="connect_config_combo_box">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>5</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="currentText">
+               <string>串口</string>
+              </property>
+              <property name="placeholderText">
+               <string/>
+              </property>
+              <item>
+               <property name="text">
+                <string>串口</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>UDP</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>TCP</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </item>
          </layout>
+        </widget>
+       </item>
+       <item row="14" column="0">
+        <widget class="QLineEdit" name="file_path_edit"/>
+       </item>
+       <item row="4" column="0">
+        <widget class="QCheckBox" name="show_in_hex_check_box">
+         <property name="text">
+          <string>16进制显示</string>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="0">
+        <widget class="QCheckBox" name="show_back_check_box">
+         <property name="text">
+          <string>回显</string>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="0">
+        <widget class="QCheckBox" name="auto_send_back_check_box">
+         <property name="text">
+          <string>接受回发</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="0">
+        <widget class="QCheckBox" name="clear_after_send_check_box">
+         <property name="text">
+          <string>发送完自动清空</string>
+         </property>
+        </widget>
+       </item>
+       <item row="17" column="0">
+        <widget class="QPushButton" name="clear_data_button">
+         <property name="text">
+          <string>清空统计数据</string>
+         </property>
+        </widget>
+       </item>
+       <item row="12" column="0">
+        <widget class="QCheckBox" name="send_new_line_check_box">
+         <property name="text">
+          <string>发送新行</string>
+         </property>
+        </widget>
+       </item>
+       <item row="15" column="0">
+        <widget class="QPushButton" name="open_connection_button">
+         <property name="text">
+          <string>打开串口</string>
+         </property>
         </widget>
        </item>
       </layout>
@@ -384,12 +435,15 @@
    <extends>QWidget</extends>
    <header>module.components.widget.soft_status.h</header>
    <container>1</container>
+   <slots>
+    <slot>clear()</slot>
+   </slots>
   </customwidget>
  </customwidgets>
  <resources/>
  <connections>
   <connection>
-   <sender>connect_config_select</sender>
+   <sender>connect_config_combo_box</sender>
    <signal>currentIndexChanged(int)</signal>
    <receiver>MainWindow</receiver>
    <slot>update_config_window()</slot>
@@ -405,7 +459,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>receive_text</sender>
+   <sender>receive_data_plain_edit</sender>
    <signal>textChanged()</signal>
    <receiver>MainWindow</receiver>
    <slot>scroll_to_bottom()</slot>
@@ -421,9 +475,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>single_clear</sender>
+   <sender>single_clear_button</sender>
    <signal>clicked()</signal>
-   <receiver>single_send_text</receiver>
+   <receiver>single_send_text_plain_edit</receiver>
    <slot>clear()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -437,7 +491,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>tabWidget</sender>
+   <sender>main_area_widget</sender>
    <signal>currentChanged(int)</signal>
    <receiver>MainWindow</receiver>
    <slot>update_clear_button()</slot>
@@ -453,7 +507,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>single_send</sender>
+   <sender>single_send_button</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
    <slot>send_data()</slot>
@@ -469,8 +523,8 @@
    </hints>
   </connection>
   <connection>
-   <sender>single_send_in_hex</sender>
-   <signal>clicked()</signal>
+   <sender>single_send_in_hex_check_box</sender>
+   <signal>clicked(bool)</signal>
    <receiver>MainWindow</receiver>
    <slot>send_show_in_hex()</slot>
    <hints>
@@ -484,6 +538,70 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>clear_data_button</sender>
+   <signal>clicked()</signal>
+   <receiver>soft_status</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>125</x>
+     <y>524</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>107</x>
+     <y>583</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>clear_receive_area_button</sender>
+   <signal>clicked()</signal>
+   <receiver>receive_data_plain_edit</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>185</x>
+     <y>493</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>331</x>
+     <y>236</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>open_connection_button</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>open_connection()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>129</x>
+     <y>470</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>234</x>
+     <y>471</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>show_in_hex_check_box</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>receive_show_in_hex()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>65</x>
+     <y>282</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>234</x>
+     <y>290</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <signal>receive_or_send()</signal>
@@ -492,5 +610,7 @@
   <slot>update_clear_button()</slot>
   <slot>send_data()</slot>
   <slot>send_show_in_hex()</slot>
+  <slot>open_connection()</slot>
+  <slot>receive_show_in_hex()</slot>
  </slots>
 </ui>
