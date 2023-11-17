@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 
 from serial import EIGHTBITS, PARITY_NONE, STOPBITS_ONE, Serial, SerialException
 from serial.tools import list_ports
@@ -42,15 +42,20 @@ class SerialManager:
     def read_all(self) -> bytes:
         return self._serial.read(self.waiting)
 
-    def send(self, data: str) -> bool:
+    def send(self, data: Union[str, bytes], encoding: Optional[str] = None) -> bool:
         if not self.open:
             self._logger.error(f"串口{self.port}未打开,无法发送数据", f"Serial-{self.port}")
             return False
-        self._serial.write(data.encode("utf-8"))
+        if isinstance(data, str):
+            if encoding:
+                data = bytes.fromhex(''.join(fr"{c:02x}" for c in data.encode(encoding=encoding)))
+            else:
+                data = bytes.fromhex(''.join(fr"{c:02x}" for c in data.encode()))
+        self._serial.write(data)
         self._logger.info(f"串口{self.port}发送成功: {data}", f"Serial-{self.port}")
         return True
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return (f"{'-' * 30}\n"
                 f"Serial Port: {self.port}\n"
                 f"Serial Rate: {self.rate}\n"
@@ -62,14 +67,14 @@ class SerialManager:
                 f"{self._logger.__repr__()}")
 
     @property
-    def waiting(self):
+    def waiting(self) -> Optional[int]:
         try:
             return self._serial.in_waiting
         except SerialException:
             return None
 
     @property
-    def open(self):
+    def open(self) -> bool:
         return self._serial.is_open
 
     @staticmethod

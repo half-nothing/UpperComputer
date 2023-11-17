@@ -16,16 +16,17 @@ from module.utils.thread_pool_manager import thread_pool
 
 
 class SerialConfigWidget(QWidget, Ui_SerialConfigWidget):
+    receive_data_signal = pyqtSignal(bytes, int)
+    serial_open_signal = pyqtSignal(bool)
+    show_in_hex_signal = pyqtSignal(bool)
+    clear_receive_data_signal = pyqtSignal()
+    clear_total_data_signal = pyqtSignal()
+
     _serial: Optional[SerialManager] = None
     _logger: Logger = Logger("SerialWidget", log_level=LogLevel.DEBUG)
-    data_changed = pyqtSignal(str, int, bool)
-    clear_receive_data_signal = pyqtSignal()
-    serial_open_signal = pyqtSignal(bool)
     _ports: set = set()
     _timer: Timer
     _read_data: Event = Event()
-    _running: Event = Event()
-    _show_in_hex: bool = False
 
     def __init__(self) -> None:
         super().__init__()
@@ -33,7 +34,7 @@ class SerialConfigWidget(QWidget, Ui_SerialConfigWidget):
         thread_pool.submit(Thread(target=self._receive_data_handler, name="Serial_Receive_Data", daemon=True).start)
         self._start_timer()
 
-    def _start_timer(self):
+    def _start_timer(self) -> None:
         self._timer = Timer(1, self._serial_search_port)
         self._timer.daemon = True
         thread_pool.submit(self._timer.start)
@@ -51,11 +52,9 @@ class SerialConfigWidget(QWidget, Ui_SerialConfigWidget):
             self._serial.close()
             self._serial = serial
 
-    def _receive_data_handler(self):
+    def _receive_data_handler(self) -> None:
         while True:
             sleep(0.01)
-            if self._running.is_set():
-                break
             if self._read_data.is_set():
                 continue
             if self._serial is None:
@@ -65,9 +64,9 @@ class SerialConfigWidget(QWidget, Ui_SerialConfigWidget):
                 self.serial_port_option()
                 return
             byte = self._serial.read(size)
-            self.data_changed.emit(byte.decode("utf-8"), size, self._show_in_hex)
+            self.receive_data_signal.emit(byte, size)
 
-    def clear_receive_data(self):
+    def clear_receive_data(self) -> None:
         self.clear_receive_data_signal.emit()
 
     def serial_port_option(self) -> None:
@@ -118,7 +117,7 @@ class SerialConfigWidget(QWidget, Ui_SerialConfigWidget):
         self.serial_open_signal.emit(True)
         self.serial = None
 
-    def _serial_search_port(self):
+    def _serial_search_port(self) -> None:
         ports = sorted(SerialManager.get_serials())
         if not ports:
             ports.append("无")
@@ -140,8 +139,11 @@ class SerialConfigWidget(QWidget, Ui_SerialConfigWidget):
         self._ports = ports_set
         self._start_timer()
 
-    def show_int_hex(self, value: int):
+    def show_int_hex(self, value: int) -> None:
         if value:
-            self._show_in_hex = True
+            self.show_in_hex_signal.emit(True)
             return
-        self._show_in_hex = False
+        self.show_in_hex_signal.emit(False)
+
+    def reset_total_data(self) -> None:
+        self.clear_total_data_signal.emit()

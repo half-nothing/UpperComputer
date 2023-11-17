@@ -1,5 +1,6 @@
+from time import sleep
+
 from module.utils.serial_manager import SerialManager
-from time import monotonic, sleep
 
 serial = SerialManager('com254', 115200)
 send_data = ""

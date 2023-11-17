@@ -7,14 +7,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>686</width>
+    <width>810</width>
     <height>622</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>0</width>
-    <height>0</height>
+    <width>810</width>
+    <height>622</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -67,12 +67,35 @@
           <property name="currentIndex">
            <number>0</number>
           </property>
-          <widget class="QWidget" name="single_send">
+          <widget class="QWidget" name="single_send_layout">
            <attribute name="title">
             <string>单项发送</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_7">
-            <item row="1" column="1">
+            <item row="1" column="0">
+             <widget class="QCheckBox" name="single_send_in_hex">
+              <property name="text">
+               <string>十六进制发送</string>
+              </property>
+              <property name="checked">
+               <bool>false</bool>
+              </property>
+              <property name="tristate">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="4">
+             <widget class="QPushButton" name="single_send">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>发送</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
              <spacer name="horizontalSpacer">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -86,28 +109,21 @@
              </spacer>
             </item>
             <item row="1" column="3">
-             <widget class="QPushButton" name="pushButton_2">
-              <property name="text">
-               <string>发送</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="2">
-             <widget class="QPushButton" name="pushButton">
+             <widget class="QPushButton" name="single_clear">
               <property name="text">
                <string>清空</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="0">
-             <widget class="QCheckBox" name="checkBox">
+            <item row="0" column="0" colspan="6">
+             <widget class="QPlainTextEdit" name="single_send_text"/>
+            </item>
+            <item row="1" column="1">
+             <widget class="QCheckBox" name="encoding_in_gbk">
               <property name="text">
-               <string>十六进制发送</string>
+               <string>GBK编码</string>
               </property>
              </widget>
-            </item>
-            <item row="0" column="0" colspan="5">
-             <widget class="QPlainTextEdit" name="plainTextEdit"/>
             </item>
            </layout>
           </widget>
@@ -338,7 +354,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>686</width>
+     <width>810</width>
      <height>21</height>
     </rect>
    </property>
@@ -405,13 +421,13 @@
    </hints>
   </connection>
   <connection>
-   <sender>pushButton</sender>
+   <sender>single_clear</sender>
    <signal>clicked()</signal>
-   <receiver>plainTextEdit</receiver>
+   <receiver>single_send_text</receiver>
    <slot>clear()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>563</x>
+     <x>687</x>
      <y>519</y>
     </hint>
     <hint type="destinationlabel">
@@ -436,11 +452,45 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>single_send</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>send_data()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>768</x>
+     <y>519</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>607</x>
+     <y>549</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>single_send_in_hex</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>send_show_in_hex()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>311</x>
+     <y>510</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>252</x>
+     <y>551</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <signal>receive_or_send()</signal>
   <slot>update_config_window()</slot>
   <slot>scroll_to_bottom()</slot>
   <slot>update_clear_button()</slot>
+  <slot>send_data()</slot>
+  <slot>send_show_in_hex()</slot>
  </slots>
 </ui>
