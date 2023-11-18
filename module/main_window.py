@@ -1,10 +1,10 @@
 from concurrent.futures import Future
 from threading import Event, Thread
 from time import sleep
-from typing import Optional
+from typing import BinaryIO, Optional
 
 from PyQt6.QtGui import QTextCursor
-from PyQt6.QtWidgets import QMainWindow
+from PyQt6.QtWidgets import QFileDialog, QMainWindow
 from serial.serialutil import EIGHTBITS, SEVENBITS, SIXBITS
 from serial.serialutil import PARITY_EVEN, PARITY_NONE, PARITY_ODD
 from serial.serialutil import STOPBITS_ONE, STOPBITS_TWO
@@ -22,10 +22,24 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     _serial: Optional[SerialManager] = None
     _serial_read_data_thread: Optional[Future] = None
     _serial_read_data_thread_alive: Event = Event()
+    _save_file: Optional[BinaryIO] = None
 
     def __init__(self) -> None:
         super().__init__()
         self.setupUi(self)
+
+    def save_data_to_file(self, status: bool):
+        if status:
+            file_path, _ = QFileDialog.getSaveFileName(self, "选择保存位置", "", "所有文件 (*.*)")
+            if file_path:
+                self.file_path_edit.setEnabled(True)
+                self.file_path_edit.setText(file_path)
+                self._save_file = open(file_path, "wb+")
+            return
+        self.file_path_edit.setEnabled(False)
+        self.file_path_edit.clear()
+        self._save_file.close()
+        self._save_file = None
 
     def update_config_window(self, value: int) -> None:
         match value:
@@ -39,6 +53,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if not data:
             return
         self.soft_status.total_receive_change_signal.emit(size)
+        if self.save_to_file_check_box.isChecked():
+            self._save_file.write(data)
+            self._save_file.flush()
         match self.main_area_widget.currentIndex():
             case 0:
                 if self.auto_send_back_check_box.isChecked():

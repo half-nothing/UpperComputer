@@ -171,6 +171,7 @@ class Ui_MainWindow(object):
         self.gridLayout_8.addLayout(self.config_type_layout, 0, 0, 1, 1)
         self.gridLayout_5.addWidget(self.connect_config_box, 0, 0, 2, 1)
         self.file_path_edit = QtWidgets.QLineEdit(parent=self.data_connect_box)
+        self.file_path_edit.setEnabled(False)
         self.file_path_edit.setObjectName("file_path_edit")
         self.gridLayout_5.addWidget(self.file_path_edit, 14, 0, 1, 1)
         self.show_in_hex_check_box = QtWidgets.QCheckBox(parent=self.data_connect_box)
@@ -215,11 +216,12 @@ class Ui_MainWindow(object):
         self.clear_receive_area_button.clicked.connect(self.receive_data_plain_edit.clear) # type: ignore
         self.open_connection_button.clicked.connect(MainWindow.open_connection) # type: ignore
         self.show_in_hex_check_box.clicked['bool'].connect(MainWindow.receive_show_in_hex) # type: ignore
+        self.save_to_file_check_box.clicked['bool'].connect(MainWindow.save_data_to_file) # type: ignore
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "上海电机学院上位机"))
         self.receive_data_box.setTitle(_translate("MainWindow", "接收区"))
         self.single_send_in_hex_check_box.setText(_translate("MainWindow", "十六进制发送"))
         self.single_send_button.setText(_translate("MainWindow", "发送"))

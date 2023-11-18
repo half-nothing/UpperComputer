@@ -18,7 +18,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>上海电机学院上位机</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="minimumSize">
@@ -344,7 +344,11 @@
         </widget>
        </item>
        <item row="14" column="0">
-        <widget class="QLineEdit" name="file_path_edit"/>
+        <widget class="QLineEdit" name="file_path_edit">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
        </item>
        <item row="4" column="0">
         <widget class="QCheckBox" name="show_in_hex_check_box">
@@ -602,6 +606,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>save_to_file_check_box</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>save_data_to_file()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>86</x>
+     <y>410</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>235</x>
+     <y>412</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <signal>receive_or_send()</signal>
@@ -612,5 +632,6 @@
   <slot>send_show_in_hex()</slot>
   <slot>open_connection()</slot>
   <slot>receive_show_in_hex()</slot>
+  <slot>save_data_to_file()</slot>
  </slots>
 </ui>
