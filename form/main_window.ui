@@ -7,14 +7,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>810</width>
-    <height>622</height>
+    <width>1090</width>
+    <height>758</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>810</width>
-    <height>622</height>
+    <width>1090</width>
+    <height>758</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -28,126 +28,6 @@
     </size>
    </property>
    <layout class="QGridLayout" name="gridLayout_6">
-    <item row="0" column="1">
-     <widget class="QTabWidget" name="main_area_widget">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="currentIndex">
-       <number>0</number>
-      </property>
-      <widget class="QWidget" name="debug_helper">
-       <attribute name="title">
-        <string>调试助手</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <item>
-         <widget class="QGroupBox" name="receive_data_box">
-          <property name="title">
-           <string>接收区</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout">
-           <item row="0" column="0">
-            <widget class="QPlainTextEdit" name="receive_data_plain_edit"/>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item>
-         <widget class="QTabWidget" name="send_data_box">
-          <property name="currentIndex">
-           <number>0</number>
-          </property>
-          <widget class="QWidget" name="single_send_layout">
-           <attribute name="title">
-            <string>单项发送</string>
-           </attribute>
-           <layout class="QGridLayout" name="gridLayout_7">
-            <item row="1" column="0">
-             <widget class="QCheckBox" name="single_send_in_hex_check_box">
-              <property name="text">
-               <string>十六进制发送</string>
-              </property>
-              <property name="checked">
-               <bool>false</bool>
-              </property>
-              <property name="tristate">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="4">
-             <widget class="QPushButton" name="single_send_button">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
-              <property name="text">
-               <string>发送</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="2">
-             <spacer name="horizontalSpacer">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="1" column="3">
-             <widget class="QPushButton" name="single_clear_button">
-              <property name="text">
-               <string>清空</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0" colspan="6">
-             <widget class="QPlainTextEdit" name="single_send_text_plain_edit"/>
-            </item>
-            <item row="1" column="1">
-             <widget class="QCheckBox" name="encoding_in_gbk_check_box">
-              <property name="text">
-               <string>GBK编码</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-          <widget class="QWidget" name="multiterm_send">
-           <attribute name="title">
-            <string>多项发送</string>
-           </attribute>
-          </widget>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="camera">
-       <attribute name="title">
-        <string>摄像头组</string>
-       </attribute>
-      </widget>
-      <widget class="QWidget" name="electromagnetism">
-       <attribute name="title">
-        <string>电磁组</string>
-       </attribute>
-      </widget>
-     </widget>
-    </item>
     <item row="1" column="0" colspan="2">
      <widget class="QGroupBox" name="soft_status_box">
       <property name="sizePolicy">
@@ -402,6 +282,290 @@
       </layout>
      </widget>
     </item>
+    <item row="0" column="1">
+     <widget class="QTabWidget" name="main_area_widget">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="currentIndex">
+       <number>1</number>
+      </property>
+      <widget class="QWidget" name="debug_helper">
+       <attribute name="title">
+        <string>调试助手</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QGroupBox" name="receive_data_box">
+          <property name="title">
+           <string>接收区</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout">
+           <item row="0" column="0">
+            <widget class="QPlainTextEdit" name="receive_data_plain_edit"/>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTabWidget" name="send_data_box">
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="single_send_layout">
+           <attribute name="title">
+            <string>单项发送</string>
+           </attribute>
+           <layout class="QGridLayout" name="gridLayout_7">
+            <item row="1" column="0">
+             <widget class="QCheckBox" name="single_send_in_hex_check_box">
+              <property name="text">
+               <string>十六进制发送</string>
+              </property>
+              <property name="checked">
+               <bool>false</bool>
+              </property>
+              <property name="tristate">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="4">
+             <widget class="QPushButton" name="single_send_button">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>发送</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="1" column="3">
+             <widget class="QPushButton" name="single_clear_button">
+              <property name="text">
+               <string>清空</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0" colspan="6">
+             <widget class="QPlainTextEdit" name="single_send_text_plain_edit"/>
+            </item>
+            <item row="1" column="1">
+             <widget class="QCheckBox" name="encoding_in_gbk_check_box">
+              <property name="text">
+               <string>GBK编码</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="multiterm_send">
+           <attribute name="title">
+            <string>多项发送</string>
+           </attribute>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="camera">
+       <attribute name="title">
+        <string>摄像头组</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="0" column="0" rowspan="2">
+         <widget class="QGroupBox" name="image_setting_box">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="title">
+           <string>图像设置</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_9">
+           <item row="2" column="1">
+            <widget class="QLineEdit" name="ImageWidthEdit">
+             <property name="text">
+              <string>188</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_2">
+             <property name="text">
+              <string>图像高度</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QComboBox" name="ImageType">
+             <item>
+              <property name="text">
+               <string>二值化</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>灰度图</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>RGB</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item row="6" column="0">
+            <widget class="QLabel" name="label_4">
+             <property name="text">
+              <string>直线个数</string>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="0" colspan="2">
+            <widget class="QCheckBox" name="checkBox">
+             <property name="text">
+              <string>自动保存图片</string>
+             </property>
+            </widget>
+           </item>
+           <item row="11" column="0" colspan="2">
+            <widget class="QPushButton" name="pushButton_4">
+             <property name="text">
+              <string>删除当前图片</string>
+             </property>
+            </widget>
+           </item>
+           <item row="16" column="0" colspan="2">
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="6" column="1">
+            <widget class="QLineEdit" name="LineNumberEdit">
+             <property name="text">
+              <string>0</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="ImageHeightEdit">
+             <property name="text">
+              <string>120</string>
+             </property>
+            </widget>
+           </item>
+           <item row="15" column="0" colspan="2">
+            <widget class="QPushButton" name="pushButton_3">
+             <property name="text">
+              <string>保存所有图片</string>
+             </property>
+            </widget>
+           </item>
+           <item row="14" column="0" colspan="2">
+            <widget class="QPushButton" name="pushButton_2">
+             <property name="text">
+              <string>保存当前图片</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>图像宽度</string>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="0" colspan="2">
+            <widget class="QCheckBox" name="checkBox_2">
+             <property name="text">
+              <string>自动跟踪</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="label_3">
+             <property name="text">
+              <string>图像格式</string>
+             </property>
+            </widget>
+           </item>
+           <item row="10" column="0" colspan="2">
+            <widget class="QLineEdit" name="lineEdit">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="12" column="0" colspan="2">
+            <widget class="QPushButton" name="pushButton">
+             <property name="text">
+              <string>删除所有图片</string>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="0" colspan="2">
+            <widget class="QCheckBox" name="checkBox_3">
+             <property name="text">
+              <string>鼠标坐标显示</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="ImageDisplay" name="image_display" native="true"/>
+        </item>
+        <item row="1" column="1">
+         <widget class="QSlider" name="horizontalSlider">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="electromagnetism">
+       <attribute name="title">
+        <string>电磁组</string>
+       </attribute>
+      </widget>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -409,7 +573,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>810</width>
+     <width>1090</width>
      <height>21</height>
     </rect>
    </property>
@@ -442,6 +606,12 @@
    <slots>
     <slot>clear()</slot>
    </slots>
+  </customwidget>
+  <customwidget>
+   <class>ImageDisplay</class>
+   <extends>QWidget</extends>
+   <header>module.components.widget.image_display.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
