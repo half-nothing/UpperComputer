@@ -1,10 +1,10 @@
 from concurrent.futures import ThreadPoolExecutor
 from enum import Enum
 from re import Pattern, compile
-from socket import AF_INET, AF_INET6, SOCK_DGRAM, SOCK_STREAM, socket
+from socket import AF_INET, AF_INET6, SOCK_DGRAM, SOCK_STREAM, socket, IPPROTO_TCP, IPPROTO_UDP
 from typing import Optional, Union
 
-from _socket import IPPROTO_TCP, IPPROTO_UDP
+from module.utils.logger import Logger
 
 
 class Sockets:
@@ -33,6 +33,7 @@ class Sockets:
     _read_buffer: int
     _read_handler = None
     _broadcast: bool = False
+    _logger: Logger
 
     def __init__(self, net_type: IPProtocol, connect_protocol: ConnectType, mode: SocketMode,
                  host: Optional[str] = None, port: Optional[int] = 8888, read_buffer: int = 1024, read_handler=None):
@@ -46,6 +47,7 @@ class Sockets:
         self._net_type, self._connect_type = net_type, connect_protocol
         self._read_handler = read_handler
         self._socket = socket(self._net_type.value, self._connect_type.value[1], self._connect_type.value[2])
+        self._logger = Logger(f"Sockets_{self._bind_host}_{self._connect_type.value[0]}")
 
     def __del__(self):
         self._socket.close()
@@ -56,23 +58,23 @@ class Sockets:
                 s.close()
 
     def __repr__(self):
-        if self._broadcast:
-            return (f"{'-' * 30}\n"
-                    f"Socket Mode: {self._mode.value}\n"
-                    f"Connect Status: {self._connect}\n"
-                    f"Connect Protocol: {self._connect_type.value[0]}\n"
-                    f"IP Protocol: {'IPV4' if self._net_type == self.IPProtocol.IPV4 else 'IPV6'}\n"
-                    f"{'Connect' if self._mode == self.SocketMode.Client else 'Listen'} Port: {self._bind_port}\n"
-                    f"Broadcast: True\n"
-                    f"{'-' * 30}")
-        return (f"{'-' * 30}\n"
-                f"Socket Mode: {self._mode.value}\n"
-                f"Connect Status: {self._connect}\n"
-                f"Connect Protocol: {self._connect_type.value[0]}\n"
-                f"IP Protocol: {'IPV4' if self._net_type == self.IPProtocol.IPV4 else 'IPV6'}\n"
-                f"{'Connect' if self._mode == self.SocketMode.Client else 'Listen'} Host: {self._bind_host}\n"
-                f"{'Connect' if self._mode == self.SocketMode.Client else 'Listen'} Port: {self._bind_port}\n"
-                f"{'-' * 30}")
+        res = f"{'-' * 30}\n"
+        res += f"Socket Mode: {self._mode.value}\n"
+        if self._mode == self.SocketMode.Client and self._connect_type == self.ConnectType.TCP:
+            res += f"Connect Status: {self._connect}\n"
+        res += f"Connect Protocol: {self._connect_type.value[0]}\n"
+        res += f"IP Protocol: {'IPV4' if self._net_type == self.IPProtocol.IPV4 else 'IPV6'}\n"
+        if self._broadcast and self._mode == self.SocketMode.Server:
+            res += f"{'-' * 15}\n"
+            res += f"Broadcast: True\n"
+            res += f"{'Connect' if self._mode == self.SocketMode.Client else 'Listen'} Port: {self._bind_port}\n"
+            res += f"{'-' * 15}\n"
+        res += f"{'Connect' if self._mode == self.SocketMode.Client else 'Listen'} Host: {self._bind_host}\n"
+        res += f"{'Connect' if self._mode == self.SocketMode.Client else 'Listen'} Port: {self._bind_port}\n"
+        if self._mode == self.SocketMode.Server and self._connect_type == self.ConnectType.TCP:
+            res += f"Connect clients: {len(self._clients)}\n"
+        res += f"{'-' * 30}"
+        return res
 
     @property
     def thread_pool(self):
@@ -88,8 +90,9 @@ class Sockets:
             return bytes.fromhex(''.join(fr"{c:02x}" for c in data.encode()))
 
     def send_data(self, data: Union[str, bytes], encoding: Optional[str] = None):
-        if self._connect_type == self.ConnectType.TCP and not self._connect:
-            raise Exception("套接字未连接")
+        if self._connect_type == self.ConnectType.TCP and not self._connect or self._broadcast:
+            self._logger.error("套接字未连接")
+            return
         self._socket.send(self.decode_data(data, encoding))
 
     def send_data_to(self, data: Union[str, bytes], host: str, port: int, encoding: Optional[str] = None):
@@ -111,26 +114,29 @@ class Sockets:
 
     def _recv_data(self):
         while True:
-            if self._connect_type == self.ConnectType.UDP:
-                try:
-                    data, addr = self._socket.recvfrom(self._read_buffer)
-                    if self._read_handler:
-                        self._read_handler(data, addr)
-                    else:
-                        print("Received:", repr(data), "from", addr)
-                except ConnectionResetError:
-                    continue
-            else:
-                try:
-                    if not self._connect:
+            try:
+                if self._connect_type == self.ConnectType.UDP:
+                    try:
+                        data, addr = self._socket.recvfrom(self._read_buffer)
+                        if self._read_handler:
+                            self._read_handler(data, addr)
+                        else:
+                            self._logger.debug(f"Received: {repr(data)}, from {addr}")
+                    except ConnectionResetError:
                         continue
-                    data = self._socket.recv(self._read_buffer)
-                    if data == b'':
-                        self._connect = False
+                else:
+                    try:
+                        if not self._connect:
+                            continue
+                        data = self._socket.recv(self._read_buffer)
+                        if data == b'':
+                            self._connect = False
+                            continue
+                        if self._read_handler:
+                            self._read_handler(data)
+                        else:
+                            self._logger.debug(f"Received: {repr(data)}")
+                    except ConnectionResetError:
                         continue
-                    if self._read_handler:
-                        self._read_handler(data)
-                    else:
-                        print("Received:", repr(data))
-                except ConnectionResetError:
-                    continue
+            except OSError as e:
+                self._logger.error("Receive Data Error")

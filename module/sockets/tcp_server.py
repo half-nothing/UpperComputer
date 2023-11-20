@@ -17,11 +17,12 @@ class TCPServer(Sockets):
         self._socket.listen(listen_number)
         self._clients = set()
         self.thread_pool.submit(Thread(target=self._main_loop, name="TCPServerMainThread", daemon=True).start)
+        self._logger.info("TCPServerInit")
 
     def _main_loop(self):
         while True:
             soc, addr = self._socket.accept()
-            print(f"new connection from {addr}")
+            self._logger.info(f"New connection from {addr[0]}:{addr[1]}")
             self._clients.add(soc)
             self.thread_pool.submit(
                 Thread(target=self._recv_data_loop, name="TCPRecvDataThread", args=(soc, addr), daemon=True).start)
@@ -30,7 +31,7 @@ class TCPServer(Sockets):
         while True:
             data = soc.recv(self._read_buffer)
             if data == b'':
-                print(f"{addr} disconnect")
+                self._logger.info(f"{addr[0]}:{addr[1]} disconnect")
                 self._clients.remove(soc)
                 break
             if self._read_handler:

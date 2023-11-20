@@ -13,3 +13,4 @@ class TCPClient(Sockets):
         self.connect()
         self._socket.setsockopt(SOL_SOCKET, SO_KEEPALIVE, 1)
         self.thread_pool.submit(Thread(target=self._recv_data, name="TCPClientRecvThread", daemon=True).start)
+        self._logger.info("TCPClientInit")
