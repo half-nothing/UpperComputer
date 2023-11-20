@@ -8,7 +8,7 @@ pip install -r requirements.txt
 ```shell
 pyinstaller UpperComputer-Mutil.spec
 ```
-构建出来的文件在[```dist/UpperComputer```](./dist/UpperComputer)下
+构建出来的文件在[```dist/UpperComputer```](./dist/UpperComputer)下  
 [```UpperComputer-Single```](UpperComputer-Single.spec)用来构建单个的可执行文件  
 ```shell
 pyinstaller UpperComputer-Single.spec

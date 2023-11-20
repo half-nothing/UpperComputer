@@ -1,3 +1,4 @@
+from enum import Enum
 from inspect import currentframe, getframeinfo
 from os import mkdir, remove
 from os.path import exists
@@ -7,11 +8,20 @@ from time import localtime, sleep, strftime
 from typing import IO, Optional
 from zipfile import ZIP_DEFLATED, ZipFile
 
-from module.enums.logger.log_level import LogLevel
-from module.enums.logger.log_type import LogType
-
 
 class Logger:
+    class LogType(Enum):
+        DEBUG = "DEBUG"
+        INFO = "INFO"
+        WARN = "WARN"
+        ERROR = "ERROR"
+
+    class LogLevel(Enum):
+        DEBUG = 0
+        INFO = 1
+        WARN = 2
+        ERROR = 3
+
     _log_path: str = "./logs/"
     _compress_file: bool = False
     _log_level: LogLevel = LogLevel.INFO
@@ -90,20 +100,20 @@ class Logger:
         return strftime("%Y-%m-%d", localtime())
 
     def debug(self, msg: str, from_target: Optional[str] = None) -> None:
-        if LogLevel.DEBUG.value >= self._log_level.value:
-            self._log(LogType.DEBUG, from_target, msg, getframeinfo(currentframe().f_back))
+        if self.LogLevel.DEBUG.value >= self._log_level.value:
+            self._log(self.LogType.DEBUG, from_target, msg, getframeinfo(currentframe().f_back))
 
     def info(self, msg: str, from_target: Optional[str] = None) -> None:
-        if LogLevel.INFO.value >= self._log_level.value:
-            self._log(LogType.INFO, from_target, msg, getframeinfo(currentframe().f_back))
+        if self.LogLevel.INFO.value >= self._log_level.value:
+            self._log(self.LogType.INFO, from_target, msg, getframeinfo(currentframe().f_back))
 
     def warn(self, msg: str, from_target: Optional[str] = None) -> None:
-        if LogLevel.WARN.value >= self._log_level.value:
-            self._log(LogType.WARN, from_target, msg, getframeinfo(currentframe().f_back))
+        if self.LogLevel.WARN.value >= self._log_level.value:
+            self._log(self.LogType.WARN, from_target, msg, getframeinfo(currentframe().f_back))
 
     def error(self, msg: str, from_target: Optional[str] = None) -> None:
-        if LogLevel.ERROR.value >= self._log_level.value:
-            self._log(LogType.ERROR, from_target, msg, getframeinfo(currentframe().f_back))
+        if self.LogLevel.ERROR.value >= self._log_level.value:
+            self._log(self.LogType.ERROR, from_target, msg, getframeinfo(currentframe().f_back))
 
     def _log(self, log_type: LogType, from_target: Optional[str], msg: str, call_fun: tuple) -> None:
         time = self.get_now_time(True)

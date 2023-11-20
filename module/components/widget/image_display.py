@@ -1,4 +1,5 @@
 from PyQt6.QtWidgets import QWidget
+
 from form.generate.image_display import Ui_ImageDisplay
 
 

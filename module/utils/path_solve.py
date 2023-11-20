@@ -1,5 +1,5 @@
 import sys
-from os.path import join, abspath
+from os.path import abspath, join
 
 
 def get_resource_path(relative_path):
