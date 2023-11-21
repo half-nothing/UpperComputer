@@ -10,7 +10,7 @@ class TCPClient(Sockets):
                  read_buffer: int = 1024, read_handler=None):
         super().__init__(net_type, Sockets.ConnectType.TCP, Sockets.SocketMode.Client,
                          host, port, read_buffer, read_handler)
-        self.connect()
+        self.connect(self._bind_host, self._bind_port)
         self._socket.setsockopt(SOL_SOCKET, SO_KEEPALIVE, 1)
         self.thread_pool.submit(Thread(target=self._recv_data, name="TCPClientRecvThread", daemon=True).start)
         self._logger.info("TCPClientInit")

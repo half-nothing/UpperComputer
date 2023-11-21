@@ -12,5 +12,7 @@ class UDPClient(Sockets):
         self._broadcast = broadcast
         if broadcast:
             self._socket.bind(("0.0.0.0", self._bind_port))
+        else:
+            self._socket.bind((self._bind_host, self._bind_port))
         self.thread_pool.submit(Thread(target=self._recv_data, name="UDPClientRecvThread", daemon=True).start)
         self._logger.info("UDPClientInit")

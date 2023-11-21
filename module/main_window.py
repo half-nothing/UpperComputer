@@ -1,7 +1,7 @@
 from concurrent.futures import Future
 from threading import Event, Thread
 from time import sleep
-from typing import BinaryIO, Optional
+from typing import BinaryIO, Optional, Union
 
 from PyQt6.QtGui import QTextCursor
 from PyQt6.QtWidgets import QFileDialog, QMainWindow
@@ -10,6 +10,10 @@ from serial.serialutil import PARITY_EVEN, PARITY_NONE, PARITY_ODD
 from serial.serialutil import STOPBITS_ONE, STOPBITS_TWO
 
 from form.generate.main_window import Ui_MainWindow
+from module.sockets.tcp_client import TCPClient
+from module.sockets.tcp_server import TCPServer
+from module.sockets.udp_client import UDPClient
+from module.sockets.udp_server import UDPServer
 from module.utils.message_box import show_warn_box
 from module.utils.serial_manager import SerialManager
 from module.utils.thread_pool_manager import thread_pool
@@ -23,6 +27,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     _serial_read_data_thread: Optional[Future] = None
     _serial_read_data_thread_alive: Event = Event()
     _save_file: Optional[BinaryIO] = None
+    _udp_socket: Optional[Union[UDPClient, UDPServer]] = None
+    _tcp_socket: Optional[Union[TCPClient, TCPServer]] = None
 
     def __init__(self) -> None:
         super().__init__()
@@ -53,14 +59,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if not data:
             return
         self.soft_status.total_receive_change_signal.emit(size)
-        if self.save_to_file_check_box.isChecked():
+        if self.save_to_file:
             self._save_file.write(data)
             self._save_file.flush()
         match self.main_area_widget.currentIndex():
             case 0:
-                if self.auto_send_back_check_box.isChecked():
+                if self.send_back:
                     self._serial.send(data)
-                if self.show_in_hex_check_box.isChecked():
+                if self.show_in_hex:
                     data = ' '.join(hex(c)[2:] for c in data) + ' '
                 else:
                     try:
@@ -91,11 +97,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         data = self.single_send_text_plain_edit.toPlainText()
         if not data:
             return
-        if self.send_new_line_check_box.isChecked():
+        if self.send_new_line:
             data += '\r\n'
-        if self.show_back_check_box.isChecked():
+        if self.show_back:
             self.receive_data_plain_edit.insertPlainText(data)
-        if self.single_send_in_hex_check_box.isChecked():
+        if self.single_send_in_hex:
             data = data.replace(" ", "")
             for item in data:
                 if item.upper() not in self._items:
@@ -106,7 +112,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             data = bytes.fromhex(data)
         else:
             data = ' '.join(
-                fr"{c:02x}" for c in data.encode("gbk" if self.encoding_in_gbk_check_box.isChecked() else "utf-8"))
+                fr"{c:02x}" for c in data.encode("gbk" if self.gbk_encoding else "utf-8"))
             data = bytes.fromhex(data)
         length = len(data)
         match (self.connect_config_combo_box.currentIndex()):
@@ -117,7 +123,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             case 2:
                 pass
         self.soft_status.total_send_change_signal.emit(length)
-        if self.clear_after_send_check_box.isChecked():
+        if self.clear_after_send:
             self.single_send_text_plain_edit.clear()
 
     def send_show_in_hex(self, checked: bool) -> None:
@@ -125,7 +131,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if checked and checked != self._send_in_hex:
             self._send_in_hex = checked
             data = ' '.join(
-                fr"{c:02x}" for c in data.encode("gbk" if self.encoding_in_gbk_check_box.isChecked() else "utf-8"))
+                fr"{c:02x}" for c in data.encode("gbk" if self.gbk_encoding else "utf-8"))
             self.single_send_text_plain_edit.setPlainText(data)
         if not checked and checked != self._send_in_hex:
             for item in data:
@@ -133,7 +139,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     show_warn_box("警告", f"字符\"{item}\"不是有效的十六进制字符([0-9, A-F])")
                     return
             try:
-                if self.encoding_in_gbk_check_box.isChecked():
+                if self.gbk_encoding:
                     self.single_send_text_plain_edit.setPlainText(bytes.fromhex(data).decode('gbk'))
                 else:
                     self.single_send_text_plain_edit.setPlainText(bytes.fromhex(data).decode('utf-8'))
@@ -230,11 +236,57 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self._serial_read_data_thread = None
         self._serial = None
 
+    def _open_udp_connect(self):
+        def handler(data, _=None):
+            self._receive_data(data, len(data))
+
+        udp = UDPClient(UDPClient.IPProtocol.IPV4, read_handler=handler)
+        print(udp)
+
+    def _open_tcp_connect(self):
+        def handler(data, _=None):
+            self._receive_data(data, len(data))
+
+        tcp = TCPClient(TCPClient.IPProtocol.IPV4, read_handler=handler)
+        print(tcp)
+
     def open_connection(self) -> None:
         match self.connect_config_combo_box.currentIndex():
             case 0:
                 self._open_serial_port()
             case 1:
-                pass
+                self._open_udp_connect()
             case 2:
-                pass
+                self._open_tcp_connect()
+
+    @property
+    def show_in_hex(self):
+        return self.show_in_hex_check_box.isChecked()
+
+    @property
+    def single_send_in_hex(self):
+        return self.single_send_in_hex_check_box.isChecked()
+
+    @property
+    def gbk_encoding(self):
+        return self.encoding_in_gbk_check_box.isChecked()
+
+    @property
+    def clear_after_send(self):
+        return self.clear_after_send_check_box.isChecked()
+
+    @property
+    def show_back(self):
+        return self.show_back_check_box.isChecked()
+
+    @property
+    def send_back(self):
+        return self.auto_send_back_check_box.isChecked()
+
+    @property
+    def send_new_line(self):
+        return self.send_new_line_check_box.isChecked()
+
+    @property
+    def save_to_file(self):
+        return self.save_to_file_check_box.isChecked()

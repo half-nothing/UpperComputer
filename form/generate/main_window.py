@@ -277,7 +277,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.connect_config_stack_widget.setCurrentIndex(0)
-        self.main_area_widget.setCurrentIndex(1)
+        self.main_area_widget.setCurrentIndex(0)
         self.send_data_box.setCurrentIndex(0)
         self.connect_config_combo_box.currentIndexChanged['int'].connect(MainWindow.update_config_window) # type: ignore
         self.receive_data_plain_edit.textChanged.connect(MainWindow.scroll_to_bottom) # type: ignore

@@ -99,11 +99,15 @@ class Sockets:
         if self._connect_type == self.ConnectType.UDP and not self._connect:
             self._socket.sendto(self.decode_data(data, encoding), (host, port))
 
-    def connect(self, host: Optional[str] = None, port: Optional[int] = None):
+    def connect(self, host: str, port: int):
         if self._connect or self._broadcast:
             return
-        self._socket.connect((host if host else self._bind_host, port if port else self._bind_port))
-        self._connect = True
+        try:
+            self._socket.connect((host if host else self._bind_host, port))
+            self._connect = True
+        except ConnectionError:
+            self._logger.error(f"连接到{self._bind_host}:{self._bind_port}时出错")
+            self._connect = False
 
     def disconnect(self):
         if not self._connect:
@@ -121,7 +125,7 @@ class Sockets:
                         if self._read_handler:
                             self._read_handler(data, addr)
                         else:
-                            self._logger.debug(f"Received: {repr(data)}, from {addr}")
+                            self._logger.info(f"Received: {repr(data)}, from {addr}")
                     except ConnectionResetError:
                         continue
                 else:
@@ -131,11 +135,12 @@ class Sockets:
                         data = self._socket.recv(self._read_buffer)
                         if data == b'':
                             self._connect = False
+                            self._logger.info(f"{self._bind_host}:{self._bind_port}断开连接")
                             continue
                         if self._read_handler:
                             self._read_handler(data)
                         else:
-                            self._logger.debug(f"Received: {repr(data)}")
+                            self._logger.info(f"Received: {repr(data)}")
                     except ConnectionResetError:
                         continue
             except OSError as e:
