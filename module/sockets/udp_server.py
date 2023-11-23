@@ -6,15 +6,14 @@ from module.sockets.sockets import Sockets
 
 
 class UDPServer(Sockets):
-    def __init__(self, net_type: Sockets.IPProtocol, host: Optional[str] = None, port: Optional[int] = 8888,
+    def __init__(self, net_type: Sockets.IPProtocol, local_host: Optional[str] = None, local_port: int = 8888,
                  read_buffer: int = 1024, read_handler=None, broadcast: bool = False):
         super().__init__(net_type, Sockets.ConnectType.UDP, Sockets.SocketMode.Server,
-                         host, port, read_buffer, read_handler)
-        self._mode = self.SocketMode.Server
+                         local_host, local_port, None, None,
+                         read_buffer, read_handler, True)
         self._broadcast = broadcast
         if broadcast:
             self._socket.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
-        self._socket.bind((self._bind_host, self._bind_port))
         self.thread_pool.submit(Thread(target=self._recv_data, name="UDPServerRecvThread", daemon=True).start)
         self._logger.info("UDPServerInit")
 
@@ -27,4 +26,4 @@ class UDPServer(Sockets):
             else:
                 data = bytes.fromhex(''.join(fr"{c:02x}" for c in data.encode()))
         self._logger.info(f"Broadcast message: {data}")
-        self._socket.sendto(data, ("<broadcast>", port if port else self._bind_port))
+        self._socket.sendto(data, ("<broadcast>", port if port else self._local_addr[1]))

@@ -1,6 +1,7 @@
 from typing import Optional, Union
-
-from serial import EIGHTBITS, PARITY_NONE, STOPBITS_ONE, Serial, SerialException
+from enum import Enum
+from serial import Serial, SerialException
+from serial import EIGHTBITS, PARITY_EVEN, PARITY_NONE, PARITY_ODD, SEVENBITS, SIXBITS, STOPBITS_ONE, STOPBITS_TWO
 from serial.tools import list_ports
 
 from module.utils.logger import Logger
@@ -12,17 +13,38 @@ class SerialManager:
     port: str
     rate: int
 
-    def __init__(self, port: str, rate: int = 9600, byte_size: int = EIGHTBITS,
-                 parity: str = PARITY_NONE, stop_bits: int = STOPBITS_ONE,
+    class ByteSize(Enum):
+        EightBits = EIGHTBITS
+        SevenBits = SEVENBITS
+        SixBits = SIXBITS
+
+    class Parity(Enum):
+        ParityNone = PARITY_NONE
+        ParityEven = PARITY_EVEN
+        ParityOdd = PARITY_ODD
+
+    class StopBits(Enum):
+        OneBit = STOPBITS_ONE
+        TwoBit = STOPBITS_TWO
+
+    def __init__(self, port: str, rate: int = 9600, byte_size: ByteSize = ByteSize.EightBits,
+                 parity: Parity = Parity.ParityNone, stop_bits: StopBits = StopBits.OneBit,
                  xon_xoff: bool = False, rts_cts: bool = False, dsr_dtr: bool = False,
                  logger: Optional[Logger] = None) -> None:
         self.port = port.lower()
         self.rate = rate
-        self._serial = Serial(port, rate, byte_size, parity, stop_bits, xonxoff=xon_xoff, rtscts=rts_cts,
+        self._serial = Serial(port, rate, byte_size.value, parity.value, stop_bits.value, xonxoff=xon_xoff,
+                              rtscts=rts_cts,
                               dsrdtr=dsr_dtr)
         self._logger = Logger("SerialLogger", prefix_name=f"Serial_{self.port}") if logger is None else logger
         if self.open:
             self._logger.info(f"{self.port}打开成功, 波特率:{self.rate}", f"Serial-{self.port}")
+
+    def __del__(self):
+        self.clear()
+
+    def clear(self):
+        self._logger.clear()
 
     def close(self) -> bool:
         if not self.open:

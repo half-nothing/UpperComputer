@@ -1,4 +1,4 @@
 from concurrent.futures import ThreadPoolExecutor
 
-thread_pool = ThreadPoolExecutor(max_workers=16)
+thread_pool = ThreadPoolExecutor(thread_name_prefix="CommonThreadPool", max_workers=16)
 

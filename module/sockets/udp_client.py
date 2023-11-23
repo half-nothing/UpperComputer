@@ -5,14 +5,10 @@ from module.sockets.sockets import Sockets
 
 
 class UDPClient(Sockets):
-    def __init__(self, net_type: Sockets.IPProtocol, host: Optional[str] = None, port: Optional[int] = 8888,
-                 read_buffer: int = 1024, read_handler=None, broadcast: bool = False):
+    def __init__(self, net_type: Sockets.IPProtocol, local_port: int = 8888, remote_host: Optional[str] = None,
+                 remote_port: int = 8888, read_buffer: int = 1024, read_handler=None):
         super().__init__(net_type, self.ConnectType.UDP, Sockets.SocketMode.Client,
-                         host, port, read_buffer, read_handler)
-        self._broadcast = broadcast
-        if broadcast:
-            self._socket.bind(("0.0.0.0", self._bind_port))
-        else:
-            self._socket.bind((self._bind_host, self._bind_port))
+                         None, local_port, remote_host, remote_port,
+                         read_buffer, read_handler, True)
         self.thread_pool.submit(Thread(target=self._recv_data, name="UDPClientRecvThread", daemon=True).start)
         self._logger.info("UDPClientInit")

@@ -89,7 +89,42 @@
        <string>数据接口</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_5">
-       <item row="16" column="0">
+       <item row="15" column="0">
+        <widget class="QPushButton" name="clear_data_button">
+         <property name="text">
+          <string>清空统计数据</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="0">
+        <widget class="QCheckBox" name="show_back_check_box">
+         <property name="text">
+          <string>回显</string>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="0">
+        <widget class="QCheckBox" name="send_new_line_check_box">
+         <property name="text">
+          <string>发送新行</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QCheckBox" name="show_in_hex_check_box">
+         <property name="text">
+          <string>16进制显示</string>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="0">
+        <widget class="QPushButton" name="open_connection_button">
+         <property name="text">
+          <string>打开串口</string>
+         </property>
+        </widget>
+       </item>
+       <item row="14" column="0">
         <widget class="QPushButton" name="clear_receive_area_button">
          <property name="enabled">
           <bool>true</bool>
@@ -99,184 +134,63 @@
          </property>
         </widget>
        </item>
-       <item row="13" column="0">
+       <item row="11" column="0">
         <widget class="QCheckBox" name="save_to_file_check_box">
          <property name="text">
           <string>接受数据到文件</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="0" rowspan="2">
-        <widget class="QGroupBox" name="connect_config_box">
-         <property name="title">
-          <string>连接配置</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_8">
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item row="1" column="0">
-           <widget class="QStackedWidget" name="connect_config_stack_widget">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>200</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>200</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="currentIndex">
-             <number>0</number>
-            </property>
-            <widget class="SerialConfigWidget" name="serial_config"/>
-            <widget class="UDPConfigWidget" name="udp_config"/>
-            <widget class="TCPConfigWidget" name="tcp_config"/>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <layout class="QGridLayout" name="config_type_layout">
-            <item row="0" column="0">
-             <widget class="QLabel" name="connect_config_label">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>3</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>20</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string notr="true">连接类型:</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QComboBox" name="connect_config_combo_box">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>5</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>20</height>
-               </size>
-              </property>
-              <property name="currentText">
-               <string>串口</string>
-              </property>
-              <property name="placeholderText">
-               <string/>
-              </property>
-              <item>
-               <property name="text">
-                <string>串口</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>UDP</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>TCP</string>
-               </property>
-              </item>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="14" column="0">
-        <widget class="QLineEdit" name="file_path_edit">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="0">
-        <widget class="QCheckBox" name="show_in_hex_check_box">
-         <property name="text">
-          <string>16进制显示</string>
-         </property>
-        </widget>
-       </item>
-       <item row="10" column="0">
-        <widget class="QCheckBox" name="show_back_check_box">
-         <property name="text">
-          <string>回显</string>
-         </property>
-        </widget>
-       </item>
-       <item row="11" column="0">
+       <item row="9" column="0">
         <widget class="QCheckBox" name="auto_send_back_check_box">
          <property name="text">
           <string>接受回发</string>
          </property>
         </widget>
        </item>
-       <item row="8" column="0">
+       <item row="12" column="0">
+        <widget class="QLineEdit" name="file_path_edit">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
         <widget class="QCheckBox" name="clear_after_send_check_box">
          <property name="text">
           <string>发送完自动清空</string>
          </property>
         </widget>
        </item>
-       <item row="17" column="0">
-        <widget class="QPushButton" name="clear_data_button">
-         <property name="text">
-          <string>清空统计数据</string>
+       <item row="0" column="0">
+        <widget class="QTabWidget" name="connect_config_widget">
+         <property name="enabled">
+          <bool>true</bool>
          </property>
-        </widget>
-       </item>
-       <item row="12" column="0">
-        <widget class="QCheckBox" name="send_new_line_check_box">
-         <property name="text">
-          <string>发送新行</string>
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>0</height>
+          </size>
          </property>
-        </widget>
-       </item>
-       <item row="15" column="0">
-        <widget class="QPushButton" name="open_connection_button">
-         <property name="text">
-          <string>打开串口</string>
+         <property name="currentIndex">
+          <number>0</number>
          </property>
+         <widget class="SerialConfigWidget" name="serial_config">
+          <attribute name="title">
+           <string>串口</string>
+          </attribute>
+         </widget>
+         <widget class="UDPConfigWidget" name="udp_config">
+          <attribute name="title">
+           <string>UDP</string>
+          </attribute>
+         </widget>
+         <widget class="TCPConfigWidget" name="tcp_config">
+          <attribute name="title">
+           <string>TCP</string>
+          </attribute>
+         </widget>
         </widget>
        </item>
       </layout>
@@ -616,22 +530,6 @@
  </customwidgets>
  <resources/>
  <connections>
-  <connection>
-   <sender>connect_config_combo_box</sender>
-   <signal>currentIndexChanged(int)</signal>
-   <receiver>MainWindow</receiver>
-   <slot>update_config_window()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>217</x>
-     <y>75</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>202</x>
-     <y>29</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>receive_data_plain_edit</sender>
    <signal>textChanged()</signal>

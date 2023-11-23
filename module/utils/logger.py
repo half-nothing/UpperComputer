@@ -55,9 +55,9 @@ class Logger:
         self._log_file = open(self._log_path + self._log_file_name, "a+", encoding="UTF-8")
         self._timer = Event()
         self.debug("Timer start")
-        Thread(target=self._time_handler, name="Timer", args=(self._timer,), daemon=True).start()
+        Thread(target=self._time_handler, name=f"{log_name}_LoggerTimer", args=(self._timer,), daemon=True).start()
 
-    def __del__(self) -> None:
+    def clear(self) -> None:
         self.debug("Exit logger")
         self._log_file.close()
         self.stop_timer()

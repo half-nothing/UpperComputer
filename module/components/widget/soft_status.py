@@ -38,6 +38,7 @@ class SoftStatus(QWidget, Ui_SoftStatus):
     def _start_timer(self) -> None:
         self._timer = Timer(1, self._calculate_speed)
         self._timer.daemon = True
+        self._timer.name = "TransformRateTimer"
         thread_pool.submit(self._timer.start)
 
     def _calculate_speed(self) -> None:

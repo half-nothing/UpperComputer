@@ -5,9 +5,6 @@ from typing import BinaryIO, Optional, Union
 
 from PyQt6.QtGui import QTextCursor
 from PyQt6.QtWidgets import QFileDialog, QMainWindow
-from serial.serialutil import EIGHTBITS, SEVENBITS, SIXBITS
-from serial.serialutil import PARITY_EVEN, PARITY_NONE, PARITY_ODD
-from serial.serialutil import STOPBITS_ONE, STOPBITS_TWO
 
 from form.generate.main_window import Ui_MainWindow
 from module.sockets.tcp_client import TCPClient
@@ -46,14 +43,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.file_path_edit.clear()
         self._save_file.close()
         self._save_file = None
-
-    def update_config_window(self, value: int) -> None:
-        match value:
-            case 0:
-                self.open_connection_button.setText("打开串口")
-            case 1 | 2:
-                self.open_connection_button.setText("打开连接")
-        self.connect_config_stack_widget.setCurrentIndex(value)
 
     def _receive_data(self, data: bytes, size: int) -> None:
         if not data:
@@ -115,16 +104,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 fr"{c:02x}" for c in data.encode("gbk" if self.gbk_encoding else "utf-8"))
             data = bytes.fromhex(data)
         length = len(data)
-        match (self.connect_config_combo_box.currentIndex()):
+        if self.clear_after_send:
+            self.single_send_text_plain_edit.clear()
+        match (self.connect_config_widget.currentIndex()):
             case 0:
                 self._serial.send(data)
             case 1:
-                pass
+                self._udp_socket.send_data_to(data, self.udp_config.remote_host, self.udp_config.remote_port)
             case 2:
-                pass
+                return
         self.soft_status.total_send_change_signal.emit(length)
-        if self.clear_after_send:
-            self.single_send_text_plain_edit.clear()
 
     def send_show_in_hex(self, checked: bool) -> None:
         data = self.single_send_text_plain_edit.toPlainText()
@@ -168,7 +157,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                         self.receive_data_plain_edit.setPlainText(repr(bytes.fromhex(text)))
 
     def _open_connection_status(self, status: bool) -> None:
-        self.connect_config_combo_box.setEnabled(status)
+        self.connect_config_widget.setEnabled(status)
         self.soft_status.connect_status_text.setText("未连接" if status else "已连接")
         self.single_send_button.setEnabled(not status)
 
@@ -195,32 +184,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self._receive_data(byte, size)
 
         if self._serial is None:
-            port = self.serial_config.ports_select.currentText()
-            rate = self.serial_config.rate_select.currentText()
+            port = self.serial_config.connect_port
+            rate = self.serial_config.rate
             if not port:
                 return
-            data_bits = EIGHTBITS
-            match self.serial_config.data_bits_select.currentText():
-                case 8:
-                    data_bits = EIGHTBITS
-                case 7:
-                    data_bits = SEVENBITS
-                case 6:
-                    data_bits = SIXBITS
-            verification = PARITY_NONE
-            match self.serial_config.verification_select.currentText():
-                case "无":
-                    verification = PARITY_NONE
-                case "奇校验":
-                    verification = PARITY_ODD
-                case "偶校验":
-                    verification = PARITY_EVEN
-            stop_bits = STOPBITS_ONE
-            match self.serial_config.stop_bits_select.currentText():
-                case 1:
-                    stop_bits = STOPBITS_ONE
-                case 2:
-                    stop_bits = STOPBITS_TWO
+            data_bits = self.serial_config.data_bit
+            verification = self.serial_config.verification
+            stop_bits = self.serial_config.stop_bit
             set_enable(False)
             self.open_connection_button.setText("关闭串口")
             self._serial = SerialManager(port, rate, data_bits, verification, stop_bits)
@@ -237,21 +207,54 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self._serial = None
 
     def _open_udp_connect(self):
-        def handler(data, _=None):
+        def set_enable(status: bool) -> None:
+            self.udp_config.remote_ip_edit.setEnabled(status)
+            self.udp_config.remote_port_edit.setEnabled(status)
+            self.udp_config.local_port_edit.setEnabled(status)
+            self.udp_config.client_mode_button.setEnabled(status)
+            self.udp_config.server_mode_button.setEnabled(status)
+            self.udp_config.client_show_view.setEnabled(not status)
+            self.udp_config.broadcast_mode_check_box.setEnabled(status)
+
+        def client_handler(data, _=None):
             self._receive_data(data, len(data))
 
-        udp = UDPClient(UDPClient.IPProtocol.IPV4, read_handler=handler)
-        print(udp)
+        def server_handler(data, addr):
+            self._receive_data(data, len(data))
+            self.udp_config.add_item(addr[0], addr[1])
+
+        if self._udp_socket:
+            self._udp_socket.clear()
+            self._udp_socket = None
+            self.open_connection_button.setText("打开连接")
+            set_enable(True)
+            return
+        if self.udp_config.is_client:
+            self._udp_socket = UDPClient(UDPClient.IPProtocol.IPV4, read_handler=client_handler,
+                                         remote_host=self.udp_config.remote_host,
+                                         remote_port=self.udp_config.remote_port,
+                                         local_port=self.udp_config.local_port,
+                                         read_buffer=50000)
+            self.open_connection_button.setText("关闭连接")
+            set_enable(False)
+            self._open_connection_status(False)
+            return
+        self._udp_socket = UDPServer(UDPServer.IPProtocol.IPV4, read_handler=server_handler,
+                                     local_host=self.udp_config.remote_host, local_port=self.udp_config.remote_port,
+                                     read_buffer=50000)
+        self.open_connection_button.setText("关闭连接")
+        set_enable(False)
+        self._open_connection_status(False)
 
     def _open_tcp_connect(self):
         def handler(data, _=None):
             self._receive_data(data, len(data))
 
-        tcp = TCPClient(TCPClient.IPProtocol.IPV4, read_handler=handler)
-        print(tcp)
+        # tcp = TCPClient(TCPClient.IPProtocol.IPV4, read_handler=handler)
+        # print(tcp)
 
     def open_connection(self) -> None:
-        match self.connect_config_combo_box.currentIndex():
+        match self.connect_config_widget.currentIndex():
             case 0:
                 self._open_serial_port()
             case 1:
