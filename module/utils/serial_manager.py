@@ -1,7 +1,8 @@
-from typing import Optional, Union
 from enum import Enum
-from serial import Serial, SerialException
+from typing import Optional, Union
+
 from serial import EIGHTBITS, PARITY_EVEN, PARITY_NONE, PARITY_ODD, SEVENBITS, SIXBITS, STOPBITS_ONE, STOPBITS_TWO
+from serial import Serial, SerialException
 from serial.tools import list_ports
 
 from module.utils.logger import Logger

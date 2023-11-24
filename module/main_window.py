@@ -11,7 +11,7 @@ from module.sockets.tcp_client import TCPClient
 from module.sockets.tcp_server import TCPServer
 from module.sockets.udp_client import UDPClient
 from module.sockets.udp_server import UDPServer
-from module.utils.message_box import show_warn_box
+from module.utils.message_box import show_error_box, show_warn_box
 from module.utils.serial_manager import SerialManager
 from module.utils.thread_pool_manager import thread_pool
 
@@ -82,6 +82,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             case 1 | 2:
                 self.clear_receive_area_button.setEnabled(False)
 
+    def update_config_window(self, index: int) -> None:
+        match index:
+            case 0:
+                self.open_connection_button.setText("打开串口")
+            case 1 | 2:
+                self.open_connection_button.setText("打开连接")
+
     def send_data(self) -> None:
         data = self.single_send_text_plain_edit.toPlainText()
         if not data:
@@ -110,9 +117,21 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             case 0:
                 self._serial.send(data)
             case 1:
-                self._udp_socket.send_data_to(data, self.udp_config.remote_host, self.udp_config.remote_port)
+                if self._udp_socket.is_client:
+                    self._udp_socket.send_data_to(data)
+                else:
+                    if self.udp_config.select_addr:
+                        self._udp_socket.send_data_to(data, self.udp_config.select_addr)
+                    else:
+                        show_warn_box("警告", "未选择发送地址")
             case 2:
-                return
+                if self._tcp_socket.is_client:
+                    self._tcp_socket.send_data(data)
+                else:
+                    if self.tcp_config.select_addr:
+                        self._tcp_socket.send_data_to(data, self.tcp_config.select_addr)
+                    else:
+                        show_warn_box("警告", "未选择发送地址")
         self.soft_status.total_send_change_signal.emit(length)
 
     def send_show_in_hex(self, checked: bool) -> None:
@@ -157,9 +176,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                         self.receive_data_plain_edit.setPlainText(repr(bytes.fromhex(text)))
 
     def _open_connection_status(self, status: bool) -> None:
-        self.connect_config_widget.setEnabled(status)
         self.soft_status.connect_status_text.setText("未连接" if status else "已连接")
         self.single_send_button.setEnabled(not status)
+        index = self.connect_config_widget.currentIndex()
+        for i in range((self.connect_config_widget.count())):
+            if i == index:
+                continue
+            self.connect_config_widget.setTabEnabled(i, status)
 
     def _open_serial_port(self) -> None:
         def set_enable(status: bool) -> None:
@@ -213,13 +236,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.udp_config.local_port_edit.setEnabled(status)
             self.udp_config.client_mode_button.setEnabled(status)
             self.udp_config.server_mode_button.setEnabled(status)
-            self.udp_config.client_show_view.setEnabled(not status)
             self.udp_config.broadcast_mode_check_box.setEnabled(status)
 
-        def client_handler(data, _=None):
+        def client_handler(data: bytes, _: tuple[str, int]) -> None:
             self._receive_data(data, len(data))
 
-        def server_handler(data, addr):
+        def server_handler(data: bytes, addr: tuple[str, int]) -> None:
             self._receive_data(data, len(data))
             self.udp_config.add_item(addr[0], addr[1])
 
@@ -228,6 +250,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self._udp_socket = None
             self.open_connection_button.setText("打开连接")
             set_enable(True)
+            self._open_connection_status(True)
             return
         if self.udp_config.is_client:
             self._udp_socket = UDPClient(UDPClient.IPProtocol.IPV4, read_handler=client_handler,
@@ -247,11 +270,55 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self._open_connection_status(False)
 
     def _open_tcp_connect(self):
-        def handler(data, _=None):
+        def set_enable(status: bool) -> None:
+            self.tcp_config.remote_ip_edit.setEnabled(status)
+            self.tcp_config.remote_port_edit.setEnabled(status)
+            self.tcp_config.local_port_edit.setEnabled(status)
+            self.tcp_config.client_mode_button.setEnabled(status)
+            self.tcp_config.server_mode_button.setEnabled(status)
+
+        def client_handler(data: bytes, _) -> None:
             self._receive_data(data, len(data))
 
-        # tcp = TCPClient(TCPClient.IPProtocol.IPV4, read_handler=handler)
-        # print(tcp)
+        def server_handler(data: bytes, addr: tuple[str, int]) -> None:
+            self._receive_data(data, len(data))
+            self.tcp_config.add_item(addr[0], addr[1])
+
+        def connect_handler(addr: tuple[str, int]) -> None:
+            self.tcp_config.add_item(addr[0], addr[1])
+
+        def disconnect_handler(addr: tuple[str, int]) -> None:
+            self.tcp_config.del_item(addr[0], addr[1])
+
+        if self._tcp_socket:
+            self._tcp_socket.clear()
+            self._tcp_socket = None
+            self.open_connection_button.setText("打开连接")
+            set_enable(True)
+            self._open_connection_status(True)
+            return
+        if self.tcp_config.is_client:
+            try:
+                self._tcp_socket = TCPClient(TCPClient.IPProtocol.IPV4, read_handler=client_handler,
+                                             remote_host=self.tcp_config.remote_host,
+                                             remote_port=self.tcp_config.remote_port,
+                                             local_port=self.tcp_config.local_port,
+                                             read_buffer=50000)
+            except ConnectionError as e:
+                show_error_box("发生错误", f"无法连接到远程服务器{e}")
+                self._tcp_socket = None
+                return
+            self.open_connection_button.setText("关闭连接")
+            set_enable(False)
+            self._open_connection_status(False)
+            return
+        self._tcp_socket = TCPServer(TCPServer.IPProtocol.IPV4, read_handler=server_handler,
+                                     connect_handler=connect_handler, disconnect_handler=disconnect_handler,
+                                     local_host=self.tcp_config.remote_host, local_port=self.tcp_config.remote_port,
+                                     read_buffer=50000)
+        self.open_connection_button.setText("关闭连接")
+        set_enable(False)
+        self._open_connection_status(False)
 
     def open_connection(self) -> None:
         match self.connect_config_widget.currentIndex():
@@ -263,33 +330,33 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self._open_tcp_connect()
 
     @property
-    def show_in_hex(self):
+    def show_in_hex(self) -> bool:
         return self.show_in_hex_check_box.isChecked()
 
     @property
-    def single_send_in_hex(self):
+    def single_send_in_hex(self) -> bool:
         return self.single_send_in_hex_check_box.isChecked()
 
     @property
-    def gbk_encoding(self):
+    def gbk_encoding(self) -> bool:
         return self.encoding_in_gbk_check_box.isChecked()
 
     @property
-    def clear_after_send(self):
+    def clear_after_send(self) -> bool:
         return self.clear_after_send_check_box.isChecked()
 
     @property
-    def show_back(self):
+    def show_back(self) -> bool:
         return self.show_back_check_box.isChecked()
 
     @property
-    def send_back(self):
+    def send_back(self) -> bool:
         return self.auto_send_back_check_box.isChecked()
 
     @property
-    def send_new_line(self):
+    def send_new_line(self) -> bool:
         return self.send_new_line_check_box.isChecked()
 
     @property
-    def save_to_file(self):
+    def save_to_file(self) -> bool:
         return self.save_to_file_check_box.isChecked()

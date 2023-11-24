@@ -8,7 +8,7 @@ from module.utils.path_solve import get_resource_path
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    app.setWindowIcon(QIcon(get_resource_path('resource/icon/icon.ico')))
     application = MainWindow()
-    application.setWindowIcon(QIcon(get_resource_path('./icon/icon.ico')))
     application.show()
     sys.exit(app.exec())

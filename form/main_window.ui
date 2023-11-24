@@ -553,8 +553,8 @@
    <slot>clear()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>687</x>
-     <y>519</y>
+     <x>967</x>
+     <y>655</y>
     </hint>
     <hint type="destinationlabel">
      <x>650</x>
@@ -585,8 +585,8 @@
    <slot>send_data()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>768</x>
-     <y>519</y>
+     <x>1048</x>
+     <y>655</y>
     </hint>
     <hint type="destinationlabel">
      <x>607</x>
@@ -601,8 +601,8 @@
    <slot>send_show_in_hex()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>311</x>
-     <y>510</y>
+     <x>351</x>
+     <y>653</y>
     </hint>
     <hint type="destinationlabel">
      <x>252</x>
@@ -617,12 +617,12 @@
    <slot>clear()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>125</x>
-     <y>524</y>
+     <x>144</x>
+     <y>671</y>
     </hint>
     <hint type="destinationlabel">
-     <x>107</x>
-     <y>583</y>
+     <x>121</x>
+     <y>741</y>
     </hint>
    </hints>
   </connection>
@@ -633,8 +633,8 @@
    <slot>clear()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>185</x>
-     <y>493</y>
+     <x>204</x>
+     <y>642</y>
     </hint>
     <hint type="destinationlabel">
      <x>331</x>
@@ -649,8 +649,8 @@
    <slot>open_connection()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>129</x>
-     <y>470</y>
+     <x>148</x>
+     <y>613</y>
     </hint>
     <hint type="destinationlabel">
      <x>234</x>
@@ -665,8 +665,8 @@
    <slot>receive_show_in_hex()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>65</x>
-     <y>282</y>
+     <x>84</x>
+     <y>432</y>
     </hint>
     <hint type="destinationlabel">
      <x>234</x>
@@ -681,12 +681,28 @@
    <slot>save_data_to_file()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>86</x>
-     <y>410</y>
+     <x>105</x>
+     <y>557</y>
     </hint>
     <hint type="destinationlabel">
      <x>235</x>
      <y>412</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>connect_config_widget</sender>
+   <signal>currentChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>update_config_window()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>81</x>
+     <y>125</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>233</x>
+     <y>49</y>
     </hint>
    </hints>
   </connection>

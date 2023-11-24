@@ -1,7 +1,8 @@
 from concurrent.futures import ThreadPoolExecutor
 from enum import Enum
 from re import Pattern, compile
-from socket import AF_INET, AF_INET6, SOCK_DGRAM, SOCK_STREAM, socket, IPPROTO_TCP, IPPROTO_UDP
+from socket import AF_INET, AF_INET6, IPPROTO_TCP, IPPROTO_UDP, SOCK_DGRAM, SOCK_STREAM, socket
+from socket import SOL_SOCKET, SO_KEEPALIVE, SO_REUSEADDR
 from threading import Event
 from typing import Optional, Union
 
@@ -24,7 +25,7 @@ class Sockets:
     _matcher: Pattern = compile(r"\b(25[0-5]|2[0-4]\d|1\d{2}|\d{1,2})(\.(25[0-5]|2[0-4]\d|1\d{2}|\d{1,2})){3}\b")
     _socket_thread_pool: ThreadPoolExecutor = ThreadPoolExecutor(thread_name_prefix="SocketThreadPool")
     _socket: Optional[socket] = None
-    _clients: Optional[set[socket]] = None
+    _clients: Optional[dict[str, socket]] = None
     _connect: bool = False
     _net_type: IPProtocol
     _mode: SocketMode
@@ -39,7 +40,8 @@ class Sockets:
 
     def __init__(self, net_type: IPProtocol, connect_protocol: ConnectType, mode: SocketMode,
                  local_host: Optional[str] = None, local_port: int = 8888, remote_host: Optional[str] = None,
-                 remote_port: Optional[int] = 8888, read_buffer: int = 1024, read_handler=None, bind: bool = False):
+                 remote_port: Optional[int] = 8888, read_buffer: int = 1024, read_handler=None,
+                 bind: bool = False) -> None:
         if net_type not in self.IPProtocol:
             raise Exception("IP protocol error")
         if connect_protocol not in self.ConnectType:
@@ -53,24 +55,27 @@ class Sockets:
         self._read_buffer, self._read_handler, self._mode = read_buffer, read_handler, mode
         self._net_type, self._connect_type = net_type, connect_protocol
         self._socket = socket(self._net_type.value, self._connect_type.value[1], self._connect_type.value[2])
+        if self.is_tcp:
+            self._socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+            if self.is_client:
+                self._socket.settimeout(5)
+                self._socket.setsockopt(SOL_SOCKET, SO_KEEPALIVE, 1)
         if bind:
             self._socket.bind(self._local_addr)
-        self._logger = Logger(f"Sockets_{self._local_addr[0]}_{self._connect_type.value[0]}")
+        self._logger = Logger(f"Socket_{self._connect_type.value[0]}_{self._mode.value}")
         self._thread_stop.clear()
 
-    def __del__(self):
-        self.clear()
-
-    def clear(self):
+    def clear(self) -> None:
         self._thread_stop.set()
         self.disconnect()
         if self._clients:
-            for s in self._clients:
-                s.shutdown(0)
+            for s in self._clients.values():
+                self._logger.info(f"Close socket: {s.getsockname()}")
+                s.shutdown(2)
                 s.close()
         self._logger.clear()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         res = f"{'-' * 30}\n"
         res += f"Socket Mode: {self._mode.value}\n"
         if self.is_client and self.is_tcp:
@@ -89,7 +94,7 @@ class Sockets:
             res += f"Remote Address: {self.remote_address}\n"
         if self.is_server and self.is_tcp:
             res += f"Connect Clients: {len(self._clients)}\n"
-            res += "Connect Client: %s\n" % " ".join(self._get_address(addr.getsockname()) for addr in self._clients)
+            res += "Connect Client: %s\n" % " ".join(addr for addr in self._clients.keys())
         res += f"{'-' * 30}"
         return res
 
@@ -102,38 +107,49 @@ class Sockets:
         else:
             return bytes.fromhex(''.join(fr"{c:02x}" for c in data.encode()))
 
-    def send_data(self, data: Union[str, bytes], encoding: Optional[str] = None):
+    def send_data(self, data: Union[str, bytes], encoding: Optional[str] = None) -> bool:
         if self.is_tcp and not self._connect:
             self._logger.error("The socket is not connected")
-            return
+            return False
+        self._logger.info(f"Send {data} to {self.remote_address}")
         self._socket.send(self.decode_data(data, encoding))
+        return True
 
-    def send_data_to(self, data: Union[str, bytes], host: Optional[str] = None, port: Optional[int] = None,
-                     encoding: Optional[str] = None):
+    def send_data_to(self, data: Union[str, bytes], host: Optional[Union[tuple[str, int], str]] = None,
+                     port: Optional[int] = None, encoding: Optional[str] = None) -> bool:
         if self.is_udp and not self._connect:
-            self._socket.sendto(self.decode_data(data, encoding),
-                                (host if host else self._remote_addr[0], port if port else self._remote_addr[1]))
+            if isinstance(host, str):
+                host = (host if host else self._remote_addr[0], port if port else self._remote_addr[1])
+            self._logger.info(f"Send {data} to {self._get_address(host)}")
+            self._socket.sendto(self.decode_data(data, encoding), host)
+            return True
+        return False
 
-    def connect(self, host: Optional[str] = None, port: Optional[int] = None):
+    def connect(self, host: Optional[str] = None, port: Optional[int] = None) -> bool:
         if self._connect or self._broadcast:
-            return
+            return False
         try:
+            self._logger.info(f"Connect to {self.remote_address}")
             self._socket.connect((host if host else self._remote_addr[0], port if port else self._remote_addr[1]))
             self._connect = True
-        except ConnectionError:
+            return True
+        except OSError:
             self._logger.error(f"Fail to connect {self.remote_address}")
             self._connect = False
+            return False
 
-    def disconnect(self):
+    def disconnect(self) -> bool:
+        self._logger.info(f"Disconnect from {self.remote_address}")
         if self.is_udp:
             self._socket.close()
-            return
+            return True
         if not self._connect:
-            return
+            return False
         self._socket.shutdown(0)
         self._socket.close()
+        return True
 
-    def _recv_data(self):
+    def _recv_data(self) -> None:
         while True:
             if self._thread_stop.is_set():
                 break
@@ -154,7 +170,7 @@ class Sockets:
                         data = self._socket.recv(self._read_buffer)
                         if data == b'':
                             self._connect = False
-                            self._logger.info(f"Disconnect from {self.remote_address}")
+                            self._logger.info(f"Disconnected from {self.remote_address}")
                             continue
                         if self._read_handler:
                             self._read_handler(data)
@@ -162,40 +178,40 @@ class Sockets:
                             self._logger.info(f"Received: {repr(data)}")
                     except ConnectionResetError:
                         continue
-            except OSError as e:
+            except OSError as _:
                 continue
 
     def _get_address(self, addr: tuple[str, int]) -> str:
         return ("%s:%d" if self.ipv4 else '[%s]:%d') % (addr[0], addr[1])
 
     @property
-    def ipv4(self):
+    def ipv4(self) -> bool:
         return self._net_type == Sockets.IPProtocol.IPV4
 
     @property
-    def remote_address(self):
+    def remote_address(self) -> str:
         return self._get_address(self._remote_addr)
 
     @property
-    def local_address(self):
+    def local_address(self) -> str:
         return self._get_address(self._local_addr)
 
     @property
-    def thread_pool(self):
+    def thread_pool(self) -> ThreadPoolExecutor:
         return Sockets._socket_thread_pool
 
     @property
-    def is_server(self):
+    def is_server(self) -> bool:
         return self._mode == Sockets.SocketMode.Server
 
     @property
-    def is_client(self):
+    def is_client(self) -> bool:
         return self._mode == Sockets.SocketMode.Client
 
     @property
-    def is_tcp(self):
+    def is_tcp(self) -> bool:
         return self._connect_type == Sockets.ConnectType.TCP
 
     @property
-    def is_udp(self):
+    def is_udp(self) -> bool:
         return self._connect_type == Sockets.ConnectType.UDP

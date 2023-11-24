@@ -1,6 +1,5 @@
 import time
 
-from module.sockets.udp_client import UDPClient
 from module.sockets.udp_server import UDPServer
 
 # temp = UDPClient(UDPClient.IPProtocol.IPV4, read_buffer=40000, port=8888)

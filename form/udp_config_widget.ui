@@ -46,17 +46,10 @@
    </property>
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout">
-     <item row="1" column="0">
-      <widget class="QLabel" name="remote_port_label">
+     <item row="1" column="1" colspan="2">
+      <widget class="QLineEdit" name="remote_port_edit">
        <property name="text">
-        <string>远程端口</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="local_port_label">
-       <property name="text">
-        <string>本地端口</string>
+        <string>8080</string>
        </property>
       </widget>
      </item>
@@ -65,57 +58,6 @@
        <property name="text">
         <string>远程地址</string>
        </property>
-      </widget>
-     </item>
-     <item row="0" column="1" colspan="2">
-      <widget class="QLineEdit" name="remote_ip_edit">
-       <property name="text">
-        <string>192.168.1.1</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="0" colspan="3">
-      <widget class="QCheckBox" name="broadcast_mode_check_box">
-       <property name="text">
-        <string>广播模式</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1" colspan="2">
-      <widget class="QLineEdit" name="remote_port_edit">
-       <property name="text">
-        <string>8080</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1" colspan="2">
-      <widget class="QLineEdit" name="local_port_edit">
-       <property name="text">
-        <string>8080</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0" colspan="3">
-      <widget class="QRadioButton" name="server_mode_button">
-       <property name="text">
-        <string>服务端</string>
-       </property>
-       <attribute name="buttonGroup">
-        <string notr="true">socket_mode_group</string>
-       </attribute>
-      </widget>
-     </item>
-     <item row="3" column="0" colspan="3">
-      <widget class="QRadioButton" name="client_mode_button">
-       <property name="text">
-        <string>客户端</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-       <attribute name="buttonGroup">
-        <string notr="true">socket_mode_group</string>
-       </attribute>
       </widget>
      </item>
      <item row="6" column="0" colspan="3">
@@ -141,6 +83,64 @@
        <attribute name="verticalHeaderVisible">
         <bool>false</bool>
        </attribute>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="remote_port_label">
+       <property name="text">
+        <string>远程端口</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0" colspan="3">
+      <widget class="QRadioButton" name="client_mode_button">
+       <property name="text">
+        <string>客户端</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+       <attribute name="buttonGroup">
+        <string notr="true">socket_mode_group</string>
+       </attribute>
+      </widget>
+     </item>
+     <item row="5" column="0" colspan="3">
+      <widget class="QCheckBox" name="broadcast_mode_check_box">
+       <property name="text">
+        <string>广播模式</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="local_port_label">
+       <property name="text">
+        <string>本地端口</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1" colspan="2">
+      <widget class="QLineEdit" name="remote_ip_edit">
+       <property name="text">
+        <string>192.168.1.1</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0" colspan="3">
+      <widget class="QRadioButton" name="server_mode_button">
+       <property name="text">
+        <string>服务端</string>
+       </property>
+       <attribute name="buttonGroup">
+        <string notr="true">socket_mode_group</string>
+       </attribute>
+      </widget>
+     </item>
+     <item row="2" column="1" colspan="2">
+      <widget class="QLineEdit" name="local_port_edit">
+       <property name="text">
+        <string>8080</string>
+       </property>
       </widget>
      </item>
     </layout>
