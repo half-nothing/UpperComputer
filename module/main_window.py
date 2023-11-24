@@ -238,7 +238,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.udp_config.server_mode_button.setEnabled(status)
             self.udp_config.broadcast_mode_check_box.setEnabled(status)
 
-        def client_handler(data: bytes, _: tuple[str, int]) -> None:
+        def client_handler(data: bytes, _: Optional[tuple[str, int]] = None) -> None:
             self._receive_data(data, len(data))
 
         def server_handler(data: bytes, addr: tuple[str, int]) -> None:
@@ -277,7 +277,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.tcp_config.client_mode_button.setEnabled(status)
             self.tcp_config.server_mode_button.setEnabled(status)
 
-        def client_handler(data: bytes, _) -> None:
+        def client_handler(data: bytes) -> None:
             self._receive_data(data, len(data))
 
         def server_handler(data: bytes, addr: tuple[str, int]) -> None:

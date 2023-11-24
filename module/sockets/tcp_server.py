@@ -23,9 +23,9 @@ class TCPServer(Sockets):
 
     def send_data_to(self, data: Union[str, bytes], host: Optional[Union[tuple[str, int], str]] = None,
                      port: Optional[int] = None, encoding: Optional[str] = None) -> bool:
-        if isinstance(host, tuple):
-            host = self._get_address(host)
-        host = self._get_address((host if host else self._remote_addr[0], port if port else self._remote_addr[1]))
+        if isinstance(host, str):
+            host = (host if host else self._remote_addr[0], port if port else self._remote_addr[1])
+        host = self._get_address(host)
         if host not in self._clients.keys():
             return False
         self._logger.info(f"Send {data} to {host}")
@@ -44,15 +44,23 @@ class TCPServer(Sockets):
 
     def _recv_data_loop(self, soc: socket, addr: tuple[str, int]) -> None:
         while True:
-            data = soc.recv(self._read_buffer)
-            if data == b'':
+            try:
+                data = soc.recv(self._read_buffer)
+                if data == b'':
+                    self._logger.info(f"{self._get_address(addr)} disconnect")
+                    self._clients[self._get_address(addr)].close()
+                    if self._disconnect_handler:
+                        self._disconnect_handler(addr)
+                    del self._clients[self._get_address(addr)]
+                    break
+                if self._read_handler:
+                    self._read_handler(data, addr)
+                else:
+                    print(f"Received: {repr(data)} from {self._get_address(addr)}")
+            except ConnectionResetError:
                 self._logger.info(f"{self._get_address(addr)} disconnect")
                 self._clients[self._get_address(addr)].close()
                 if self._disconnect_handler:
                     self._disconnect_handler(addr)
                 del self._clients[self._get_address(addr)]
                 break
-            if self._read_handler:
-                self._read_handler(data, addr)
-            else:
-                print(f"Received: {repr(data)} from {self._get_address(addr)}")

@@ -139,10 +139,13 @@ class Sockets:
             return False
 
     def disconnect(self) -> bool:
-        self._logger.info(f"Disconnect from {self.remote_address}")
         if self.is_udp:
             self._socket.close()
             return True
+        if self.is_client:
+            self._logger.info(f"Disconnect from {self.remote_address}")
+        else:
+            self._logger.info(f"Stop server at {self.local_address}")
         if not self._connect:
             return False
         self._socket.shutdown(0)
@@ -171,7 +174,7 @@ class Sockets:
                         if data == b'':
                             self._connect = False
                             self._logger.info(f"Disconnected from {self.remote_address}")
-                            continue
+                            break
                         if self._read_handler:
                             self._read_handler(data)
                         else:
@@ -182,7 +185,7 @@ class Sockets:
                 continue
 
     def _get_address(self, addr: tuple[str, int]) -> str:
-        return ("%s:%d" if self.ipv4 else '[%s]:%d') % (addr[0], addr[1])
+        return ("%s:%d" if self.ipv4 else '[%s]:%d') % (addr[0], int(addr[1]))
 
     @property
     def ipv4(self) -> bool:
