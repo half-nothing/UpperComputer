@@ -24,7 +24,7 @@ class ImageDisplay(QWidget, Ui_ImageDisplay):
         self._start_point.setX(5)
         self._start_point.setY(5)
         self._displayImage = QPixmap(self.image_width, self.image_height)
-        self._displayImage.fill(Qt.GlobalColor.gray)
+        self._displayImage.fill(QColor(30, 30, 30))
         self._now_mouse_image_pos = self._start_point
         self.setMouseTracking(True)
 
