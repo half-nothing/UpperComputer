@@ -30,6 +30,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self) -> None:
         super().__init__()
         self.setupUi(self)
+        self.update_clear_button(self.main_area_widget.currentIndex())
 
     def save_data_to_file(self, status: bool):
         if status:
@@ -38,6 +39,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.file_path_edit.setEnabled(True)
                 self.file_path_edit.setText(file_path)
                 self._save_file = open(file_path, "wb+")
+            else:
+                self.save_to_file_check_box.setChecked(False)
             return
         self.file_path_edit.setEnabled(False)
         self.file_path_edit.clear()

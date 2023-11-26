@@ -211,7 +211,7 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="debug_helper">
        <attribute name="title">
@@ -322,21 +322,59 @@
           </property>
           <layout class="QGridLayout" name="gridLayout_9">
            <item row="2" column="1">
-            <widget class="QLineEdit" name="ImageWidthEdit">
+            <widget class="QLineEdit" name="image_width_edit">
              <property name="text">
               <string>188</string>
              </property>
             </widget>
            </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="image_width_label">
+             <property name="text">
+              <string>图像宽度</string>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="0" colspan="2">
+            <widget class="QCheckBox" name="show_mouse_pos_check_box">
+             <property name="text">
+              <string>鼠标坐标显示</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="13" column="0" colspan="2">
+            <widget class="QPushButton" name="save_cur_image_button">
+             <property name="text">
+              <string>保存当前图片</string>
+             </property>
+            </widget>
+           </item>
            <item row="0" column="0">
-            <widget class="QLabel" name="label_2">
+            <widget class="QLabel" name="image_height_label">
              <property name="text">
               <string>图像高度</string>
              </property>
             </widget>
            </item>
+           <item row="11" column="0" colspan="2">
+            <widget class="QPushButton" name="delete_all_image_button">
+             <property name="text">
+              <string>删除所有图片</string>
+             </property>
+            </widget>
+           </item>
+           <item row="14" column="0" colspan="2">
+            <widget class="QPushButton" name="save_all_image_button">
+             <property name="text">
+              <string>保存所有图片</string>
+             </property>
+            </widget>
+           </item>
            <item row="3" column="1">
-            <widget class="QComboBox" name="ImageType">
+            <widget class="QComboBox" name="image_type_combo_box">
              <item>
               <property name="text">
                <string>二值化</string>
@@ -354,28 +392,49 @@
              </item>
             </widget>
            </item>
-           <item row="6" column="0">
-            <widget class="QLabel" name="label_4">
-             <property name="text">
-              <string>直线个数</string>
-             </property>
-            </widget>
-           </item>
-           <item row="9" column="0" colspan="2">
-            <widget class="QCheckBox" name="checkBox">
-             <property name="text">
-              <string>自动保存图片</string>
-             </property>
-            </widget>
-           </item>
-           <item row="11" column="0" colspan="2">
-            <widget class="QPushButton" name="pushButton_4">
+           <item row="10" column="0" colspan="2">
+            <widget class="QPushButton" name="delete_cur_image_button">
              <property name="text">
               <string>删除当前图片</string>
              </property>
             </widget>
            </item>
-           <item row="16" column="0" colspan="2">
+           <item row="8" column="0" colspan="2">
+            <widget class="QCheckBox" name="auto_save_file_check_box">
+             <property name="text">
+              <string>自动保存图片</string>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="1">
+            <widget class="QLineEdit" name="line_number_edit">
+             <property name="text">
+              <string>0</string>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="0" colspan="2">
+            <widget class="QLineEdit" name="image_save_path_edit">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="image_height_edit">
+             <property name="text">
+              <string>120</string>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="0">
+            <widget class="QLabel" name="line_number_label">
+             <property name="text">
+              <string>直线个数</string>
+             </property>
+            </widget>
+           </item>
+           <item row="15" column="0" colspan="2">
             <spacer name="verticalSpacer">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -388,73 +447,10 @@
              </property>
             </spacer>
            </item>
-           <item row="6" column="1">
-            <widget class="QLineEdit" name="LineNumberEdit">
-             <property name="text">
-              <string>0</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLineEdit" name="ImageHeightEdit">
-             <property name="text">
-              <string>120</string>
-             </property>
-            </widget>
-           </item>
-           <item row="15" column="0" colspan="2">
-            <widget class="QPushButton" name="pushButton_3">
-             <property name="text">
-              <string>保存所有图片</string>
-             </property>
-            </widget>
-           </item>
-           <item row="14" column="0" colspan="2">
-            <widget class="QPushButton" name="pushButton_2">
-             <property name="text">
-              <string>保存当前图片</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QLabel" name="label">
-             <property name="text">
-              <string>图像宽度</string>
-             </property>
-            </widget>
-           </item>
-           <item row="8" column="0" colspan="2">
-            <widget class="QCheckBox" name="checkBox_2">
-             <property name="text">
-              <string>自动跟踪</string>
-             </property>
-            </widget>
-           </item>
            <item row="3" column="0">
-            <widget class="QLabel" name="label_3">
+            <widget class="QLabel" name="image_type_label">
              <property name="text">
               <string>图像格式</string>
-             </property>
-            </widget>
-           </item>
-           <item row="10" column="0" colspan="2">
-            <widget class="QLineEdit" name="lineEdit">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="12" column="0" colspan="2">
-            <widget class="QPushButton" name="pushButton">
-             <property name="text">
-              <string>删除所有图片</string>
-             </property>
-            </widget>
-           </item>
-           <item row="7" column="0" colspan="2">
-            <widget class="QCheckBox" name="checkBox_3">
-             <property name="text">
-              <string>鼠标坐标显示</string>
              </property>
             </widget>
            </item>
@@ -466,6 +462,9 @@
         </item>
         <item row="1" column="1">
          <widget class="QSlider" name="horizontalSlider">
+          <property name="maximum">
+           <number>0</number>
+          </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -526,6 +525,11 @@
    <extends>QWidget</extends>
    <header>module.components.widget.image_display.h</header>
    <container>1</container>
+   <slots>
+    <slot>show_mouse_pos()</slot>
+    <slot>image_height_change()</slot>
+    <slot>image_width_change()</slot>
+   </slots>
   </customwidget>
  </customwidgets>
  <resources/>
@@ -553,7 +557,7 @@
    <slot>clear()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>967</x>
+     <x>1142</x>
      <y>655</y>
     </hint>
     <hint type="destinationlabel">
@@ -569,12 +573,12 @@
    <slot>update_clear_button()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>481</x>
-     <y>39</y>
+     <x>594</x>
+     <y>40</y>
     </hint>
     <hint type="destinationlabel">
-     <x>453</x>
-     <y>24</y>
+     <x>618</x>
+     <y>41</y>
     </hint>
    </hints>
   </connection>
@@ -585,7 +589,7 @@
    <slot>send_data()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1048</x>
+     <x>1223</x>
      <y>655</y>
     </hint>
     <hint type="destinationlabel">
@@ -617,12 +621,12 @@
    <slot>clear()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>144</x>
+     <x>122</x>
      <y>671</y>
     </hint>
     <hint type="destinationlabel">
-     <x>121</x>
-     <y>741</y>
+     <x>122</x>
+     <y>709</y>
     </hint>
    </hints>
   </connection>
@@ -653,8 +657,8 @@
      <y>613</y>
     </hint>
     <hint type="destinationlabel">
-     <x>234</x>
-     <y>471</y>
+     <x>227</x>
+     <y>605</y>
     </hint>
    </hints>
   </connection>
@@ -669,8 +673,8 @@
      <y>432</y>
     </hint>
     <hint type="destinationlabel">
-     <x>234</x>
-     <y>290</y>
+     <x>251</x>
+     <y>424</y>
     </hint>
    </hints>
   </connection>
@@ -685,8 +689,8 @@
      <y>557</y>
     </hint>
     <hint type="destinationlabel">
-     <x>235</x>
-     <y>412</y>
+     <x>245</x>
+     <y>550</y>
     </hint>
    </hints>
   </connection>
@@ -697,12 +701,60 @@
    <slot>update_config_window()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>81</x>
-     <y>125</y>
+     <x>155</x>
+     <y>398</y>
     </hint>
     <hint type="destinationlabel">
-     <x>233</x>
-     <y>49</y>
+     <x>176</x>
+     <y>397</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>show_mouse_pos_check_box</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>image_display</receiver>
+   <slot>show_mouse_pos()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>436</x>
+     <y>207</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>459</x>
+     <y>207</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>image_height_edit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>image_display</receiver>
+   <slot>image_height_change()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>355</x>
+     <y>91</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>468</x>
+     <y>100</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>image_width_edit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>image_display</receiver>
+   <slot>image_width_change()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>403</x>
+     <y>122</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>463</x>
+     <y>127</y>
     </hint>
    </hints>
   </connection>

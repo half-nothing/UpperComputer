@@ -21,32 +21,14 @@ class ImageDisplay(QWidget, Ui_ImageDisplay):
     def __init__(self, parent):
         super().__init__(parent)
         self.setupUi(self)
-        self._start_point.setX(5)
-        self._start_point.setY(5)
+        self._start_point.setX(0)
+        self._start_point.setY(0)
         self._displayImage = QPixmap(self.image_width, self.image_height)
         self._displayImage.fill(QColor(30, 30, 30))
         self._now_mouse_image_pos = self._start_point
         self.setMouseTracking(True)
 
     def resizeEvent(self, event: QResizeEvent):
-        self.repaint()
-
-    @property
-    def image_width(self) -> int:
-        return self._image_width
-
-    @image_width.setter
-    def image_width(self, value: int) -> None:
-        self._image_width = value
-        self.repaint()
-
-    @property
-    def image_height(self) -> int:
-        return self._image_height
-
-    @image_height.setter
-    def image_height(self, value: int) -> None:
-        self._image_height = value
         self.repaint()
 
     def display_image(self, image: QPixmap):
@@ -91,7 +73,8 @@ class ImageDisplay(QWidget, Ui_ImageDisplay):
         painter.drawPixmap(int(self._start_point.x()), int(self._start_point.y()),
                            int(self.image_width * self._width_per_pix),
                            int(self.image_height * self._width_per_pix), self._displayImage)
-        self.draw_pixel(int(self._now_mouse_image_pos.x()), int(self._now_mouse_image_pos.y()), QColor(255, 174, 201))
+        self.draw_pixel(int(self._now_mouse_image_pos.x()), int(self._now_mouse_image_pos.y()),
+                        QColor(255, 174, 201))
         self.print_grid()
 
     def wheelEvent(self, event: QWheelEvent):
@@ -128,3 +111,34 @@ class ImageDisplay(QWidget, Ui_ImageDisplay):
     def mouseReleaseEvent(self, event: QMouseEvent):
         if event.button() == Qt.MouseButton.LeftButton:
             self._left_mouse_pressed = False
+
+    def show_mouse_pos(self, status: bool):
+        if status:
+            self.mouse_pos.setVisible(True)
+            return
+        self.mouse_pos.setVisible(False)
+        self.repaint()
+
+    def image_height_change(self, height: str):
+        self.image_height = int(height)
+
+    def image_width_change(self, width: str):
+        self.image_width = int(width)
+
+    @property
+    def image_width(self) -> int:
+        return self._image_width
+
+    @image_width.setter
+    def image_width(self, value: int) -> None:
+        self._image_width = value
+        self.repaint()
+
+    @property
+    def image_height(self) -> int:
+        return self._image_height
+
+    @image_height.setter
+    def image_height(self, value: int) -> None:
+        self._image_height = value
+        self.repaint()
