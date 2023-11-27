@@ -321,21 +321,70 @@
            <string>图像设置</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_9">
-           <item row="2" column="1">
-            <widget class="QLineEdit" name="image_width_edit">
+           <item row="9" column="0" colspan="2">
+            <widget class="QCheckBox" name="auto_save_file_check_box">
              <property name="text">
-              <string>188</string>
+              <string>自动保存图片</string>
              </property>
             </widget>
            </item>
-           <item row="2" column="0">
+           <item row="7" column="1">
+            <widget class="QLineEdit" name="line_number_edit">
+             <property name="text">
+              <string>0</string>
+             </property>
+            </widget>
+           </item>
+           <item row="10" column="0" colspan="2">
+            <widget class="QLineEdit" name="image_save_path_edit">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="14" column="0" colspan="2">
+            <widget class="QPushButton" name="save_cur_image_button">
+             <property name="text">
+              <string>保存当前图片</string>
+             </property>
+            </widget>
+           </item>
+           <item row="11" column="0" colspan="2">
+            <widget class="QPushButton" name="delete_cur_image_button">
+             <property name="text">
+              <string>删除当前图片</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="pix_per_point_label">
+             <property name="text">
+              <string>像素宽度</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLineEdit" name="image_height_edit">
+             <property name="text">
+              <string>120</string>
+             </property>
+            </widget>
+           </item>
+           <item row="12" column="0" colspan="2">
+            <widget class="QPushButton" name="delete_all_image_button">
+             <property name="text">
+              <string>删除所有图片</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
             <widget class="QLabel" name="image_width_label">
              <property name="text">
               <string>图像宽度</string>
              </property>
             </widget>
            </item>
-           <item row="7" column="0" colspan="2">
+           <item row="8" column="0" colspan="2">
             <widget class="QCheckBox" name="show_mouse_pos_check_box">
              <property name="text">
               <string>鼠标坐标显示</string>
@@ -345,35 +394,21 @@
              </property>
             </widget>
            </item>
-           <item row="13" column="0" colspan="2">
-            <widget class="QPushButton" name="save_cur_image_button">
+           <item row="3" column="1">
+            <widget class="QLineEdit" name="image_width_edit">
              <property name="text">
-              <string>保存当前图片</string>
+              <string>188</string>
              </property>
             </widget>
            </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="image_height_label">
-             <property name="text">
-              <string>图像高度</string>
-             </property>
-            </widget>
-           </item>
-           <item row="11" column="0" colspan="2">
-            <widget class="QPushButton" name="delete_all_image_button">
-             <property name="text">
-              <string>删除所有图片</string>
-             </property>
-            </widget>
-           </item>
-           <item row="14" column="0" colspan="2">
+           <item row="15" column="0" colspan="2">
             <widget class="QPushButton" name="save_all_image_button">
              <property name="text">
               <string>保存所有图片</string>
              </property>
             </widget>
            </item>
-           <item row="3" column="1">
+           <item row="4" column="1">
             <widget class="QComboBox" name="image_type_combo_box">
              <item>
               <property name="text">
@@ -392,49 +427,14 @@
              </item>
             </widget>
            </item>
-           <item row="10" column="0" colspan="2">
-            <widget class="QPushButton" name="delete_cur_image_button">
-             <property name="text">
-              <string>删除当前图片</string>
-             </property>
-            </widget>
-           </item>
-           <item row="8" column="0" colspan="2">
-            <widget class="QCheckBox" name="auto_save_file_check_box">
-             <property name="text">
-              <string>自动保存图片</string>
-             </property>
-            </widget>
-           </item>
-           <item row="6" column="1">
-            <widget class="QLineEdit" name="line_number_edit">
-             <property name="text">
-              <string>0</string>
-             </property>
-            </widget>
-           </item>
-           <item row="9" column="0" colspan="2">
-            <widget class="QLineEdit" name="image_save_path_edit">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
            <item row="0" column="1">
-            <widget class="QLineEdit" name="image_height_edit">
+            <widget class="QLineEdit" name="pix_per_point_edit">
              <property name="text">
-              <string>120</string>
+              <string>4</string>
              </property>
             </widget>
            </item>
-           <item row="6" column="0">
-            <widget class="QLabel" name="line_number_label">
-             <property name="text">
-              <string>直线个数</string>
-             </property>
-            </widget>
-           </item>
-           <item row="15" column="0" colspan="2">
+           <item row="16" column="0" colspan="2">
             <spacer name="verticalSpacer">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -447,10 +447,24 @@
              </property>
             </spacer>
            </item>
-           <item row="3" column="0">
+           <item row="4" column="0">
             <widget class="QLabel" name="image_type_label">
              <property name="text">
               <string>图像格式</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="image_height_label">
+             <property name="text">
+              <string>图像高度</string>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="0">
+            <widget class="QLabel" name="line_number_label">
+             <property name="text">
+              <string>直线个数</string>
              </property>
             </widget>
            </item>
@@ -529,6 +543,7 @@
     <slot>show_mouse_pos()</slot>
     <slot>image_height_change()</slot>
     <slot>image_width_change()</slot>
+    <slot>pix_per_point_change()</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -717,8 +732,8 @@
    <slot>show_mouse_pos()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>436</x>
-     <y>207</y>
+     <x>442</x>
+     <y>269</y>
     </hint>
     <hint type="destinationlabel">
      <x>459</x>
@@ -733,12 +748,12 @@
    <slot>image_height_change()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>355</x>
-     <y>91</y>
+     <x>442</x>
+     <y>156</y>
     </hint>
     <hint type="destinationlabel">
-     <x>468</x>
-     <y>100</y>
+     <x>466</x>
+     <y>128</y>
     </hint>
    </hints>
   </connection>
@@ -749,12 +764,28 @@
    <slot>image_width_change()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>403</x>
-     <y>122</y>
+     <x>442</x>
+     <y>184</y>
     </hint>
     <hint type="destinationlabel">
-     <x>463</x>
-     <y>127</y>
+     <x>468</x>
+     <y>156</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pix_per_point_edit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>image_display</receiver>
+   <slot>pix_per_point_change()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>393</x>
+     <y>91</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>470</x>
+     <y>99</y>
     </hint>
    </hints>
   </connection>

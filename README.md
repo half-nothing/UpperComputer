@@ -5,7 +5,9 @@
     基于 PyQt6 的 智能车上位机
 </p>
 <p align="center">
-    <img alt="GitHub release" src="https://img.shields.io/github/v/release/half-nothing/UpperComputer">
+    <a href="https://www.github.com/half-nothing/UpperComputer/releases/latest">
+        <img alt="GitHub release" src="https://img.shields.io/github/v/release/half-nothing/UpperComputer">
+    </a>
     <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/half-nothing/UpperComputer">
     <br/>
     <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/half-nothing/UpperComputer/python-build.yml">

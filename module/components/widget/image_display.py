@@ -14,6 +14,7 @@ class ImageDisplay(QWidget, Ui_ImageDisplay):
     _displayImage: QPixmap
     _mouse_pre_pos: QPointF
     _now_mouse_image_pos: QPointF
+    _width_per_pix_base: float = 4
     _width_per_pix: float = 4
     _left_mouse_pressed: bool = False
     _zoom: float = 1
@@ -80,12 +81,12 @@ class ImageDisplay(QWidget, Ui_ImageDisplay):
     def wheelEvent(self, event: QWheelEvent):
         if event.angleDelta().y() > 0:
             self._zoom += 0.1
-            self._width_per_pix = 4 * self._zoom
+            self._width_per_pix = self._width_per_pix_base * self._zoom
         else:
             self._zoom -= 0.1
             if self._zoom < 1.0:
                 self._zoom = 1.0
-            self._width_per_pix = 4 * self._zoom
+            self._width_per_pix = self._width_per_pix_base * self._zoom
         self.repaint()
 
     def mouseMoveEvent(self, event: QMouseEvent):
@@ -124,6 +125,13 @@ class ImageDisplay(QWidget, Ui_ImageDisplay):
 
     def image_width_change(self, width: str):
         self.image_width = int(width)
+
+    def pix_per_point_change(self, pix_per_point: str):
+        if pix_per_point == '':
+            return
+        self._width_per_pix_base = int(pix_per_point)
+        self._width_per_pix = self._width_per_pix_base * self._zoom
+        self.repaint()
 
     @property
     def image_width(self) -> int:
