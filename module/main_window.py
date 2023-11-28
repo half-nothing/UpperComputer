@@ -1,9 +1,11 @@
+from binascii import hexlify
 from concurrent.futures import Future
 from threading import Event, Thread
 from time import sleep
 from typing import BinaryIO, Optional, Union
 
-from PyQt6.QtGui import QTextCursor
+from PyQt6.QtCore import QPointF, Qt
+from PyQt6.QtGui import QImage, QPainter, QPen, QPixmap, QPolygonF, QTextCursor
 from PyQt6.QtWidgets import QFileDialog, QMainWindow
 
 from form.generate.main_window import Ui_MainWindow
@@ -11,12 +13,14 @@ from module.sockets.tcp_client import TCPClient
 from module.sockets.tcp_server import TCPServer
 from module.sockets.udp_client import UDPClient
 from module.sockets.udp_server import UDPServer
+from module.utils.logger import Logger
 from module.utils.message_box import show_error_box, show_warn_box
 from module.utils.serial_manager import SerialManager
 from module.utils.thread_pool_manager import thread_pool
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
+    _logger: Logger = Logger("MainWindow")
     _receive_in_hex: bool = False
     _send_in_hex: bool = False
     _items = ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', ' ')
@@ -26,6 +30,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     _save_file: Optional[BinaryIO] = None
     _udp_socket: Optional[Union[UDPClient, UDPServer]] = None
     _tcp_socket: Optional[Union[TCPClient, TCPServer]] = None
+    _start_marker: bytes = b"\x48\x41\x4C\x46"
+    _end_marker: bytes = b"\x46\x4C\x41\x48"
+    _global_color: list[Qt.GlobalColor] = [Qt.GlobalColor.red, Qt.GlobalColor.green, Qt.GlobalColor.blue]
+    _lines: list[QPolygonF] = []
+    _line_number: int = 0
+    _images_video: list[QPixmap] = []
+    _max_frame: int = 10000
 
     def __init__(self) -> None:
         super().__init__()
@@ -47,31 +58,73 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self._save_file.close()
         self._save_file = None
 
-    def _receive_data(self, data: bytes, size: int) -> None:
-        if not data:
+    def _receive_data(self, raw_data: bytes, size: int) -> None:
+        def mono_decode(mono_data: bytes) -> bytes:
+            res_data = b""
+            binary_sequence = bin(int(hexlify(mono_data), 16))[2:]
+            for i in range(len(binary_sequence)):
+                res_data += "\xFF" if binary_sequence[i] == "1" else "\x00"
+            return res_data
+
+        if not raw_data:
             return
         self.soft_status.total_receive_change_signal.emit(size)
         if self.save_to_file:
-            self._save_file.write(data)
+            self._save_file.write(raw_data)
             self._save_file.flush()
         match self.main_area_widget.currentIndex():
             case 0:
                 if self.send_back:
-                    self._serial.send(data)
+                    self._serial.send(raw_data)
                 if self.show_in_hex:
-                    data = ' '.join(hex(c)[2:] for c in data) + ' '
+                    raw_data = ' '.join(hex(c)[2:] for c in raw_data) + ' '
                 else:
                     try:
-                        data = data.decode("utf-8")
+                        raw_data = raw_data.decode("utf-8")
                     except UnicodeDecodeError:
                         try:
-                            data = data.decode("gbk")
+                            raw_data = raw_data.decode("gbk")
                         except UnicodeDecodeError:
-                            data = repr(data).lstrip('b').strip('\'').replace("\\x", "")
-                            data = ' '.join(data[i:i + 2] for i in range(0, len(data), 2)) + ' '
-                self.receive_data_plain_edit.insertPlainText(data)
+                            raw_data = repr(raw_data).lstrip('b').strip('\'').replace("\\x", "")
+                            raw_data = ' '.join(raw_data[i:i + 2] for i in range(0, len(raw_data), 2)) + ' '
+                self.receive_data_plain_edit.insertPlainText(raw_data)
             case 1:
-                pass
+                start = raw_data.find(self._start_marker)
+                end = raw_data.find(self._end_marker)
+                if start == -1 or end == -1:
+                    self._logger.error(f"Can not find data mark")
+                    return
+                raw_data = raw_data[start + len(self._start_marker): end]
+                length = self.image_display.image_size
+                real_format = QImage.Format.Format_Indexed8
+                if self.image_type == QImage.Format.Format_Mono:
+                    length /= 8
+                if self.image_type == QImage.Format.Format_RGB888:
+                    real_format = QImage.Format.Format_RGB888
+                    length *= 3
+                data = raw_data[:length]
+                raw_data = b""
+                if self.image_type == QImage.Format.Format_Mono:
+                    data = mono_decode(data)
+                image = QImage(data, self.image_display.image_width, self.image_display.image_height,
+                               real_format).convertToFormat(QImage.Format.Format_RGB888)
+                paint = QPainter(image)
+                for i in range(self._line_number):
+                    self._lines[i].clear()
+                    line_data = raw_data[:self.image_display.image_height]
+                    raw_data = raw_data[self.image_display.image_height:]
+                    for j in range(self.image_display.image_height):
+                        self._lines[i].append(QPointF(int(line_data[j]), j))
+                for i in range(self._line_number):
+                    paint.setPen(QPen(self._global_color[i], 1))
+                    paint.drawPoints(self._lines[i])
+                self._images_video.append(QPixmap.fromImage(image))
+                size = len(self._images_video)
+                if size > self._max_frame:
+                    size -= 1
+                    del self._images_video[0]
+                self.image_slider.setMaximum(size - 1)
+                self.image_slider.setValue(size - 1)
             case 2:
                 pass
 
@@ -332,6 +385,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             case 2:
                 self._open_tcp_connect()
 
+    def line_number_change(self, num: str) -> None:
+        if num == "":
+            return
+        self._line_number = int(num)
+
+    def display_select_image(self, value: int) -> None:
+        self.image_display.display_image(self._images_video[value])
+
     @property
     def show_in_hex(self) -> bool:
         return self.show_in_hex_check_box.isChecked()
@@ -363,3 +424,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     @property
     def save_to_file(self) -> bool:
         return self.save_to_file_check_box.isChecked()
+
+    @property
+    def image_type(self) -> QImage.Format:
+        match self.image_type_combo_box.currentIndex():
+            case 0:
+                return QImage.Format.Format_Mono
+            case 1:
+                return QImage.Format.Format_Indexed8
+            case 2:
+                return QImage.Format.Format_RGB888

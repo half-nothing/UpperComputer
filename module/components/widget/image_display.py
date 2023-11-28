@@ -1,5 +1,3 @@
-from typing import Optional
-
 from PyQt6.QtCore import QLineF, QPointF, QRectF, Qt
 from PyQt6.QtGui import QColor, QMouseEvent, QPaintEvent, QPainter, QPen, QPixmap, QResizeEvent, QWheelEvent
 from PyQt6.QtWidgets import QWidget
@@ -150,3 +148,7 @@ class ImageDisplay(QWidget, Ui_ImageDisplay):
     def image_height(self, value: int) -> None:
         self._image_height = value
         self.repaint()
+
+    @property
+    def image_size(self) -> int:
+        return self._image_height * self._image_width

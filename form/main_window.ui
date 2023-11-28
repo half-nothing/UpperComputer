@@ -475,7 +475,7 @@
          <widget class="ImageDisplay" name="image_display" native="true"/>
         </item>
         <item row="1" column="1">
-         <widget class="QSlider" name="horizontalSlider">
+         <widget class="QSlider" name="image_slider">
           <property name="maximum">
            <number>0</number>
           </property>
@@ -733,11 +733,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>442</x>
-     <y>269</y>
+     <y>233</y>
     </hint>
     <hint type="destinationlabel">
      <x>459</x>
-     <y>207</y>
+     <y>233</y>
     </hint>
    </hints>
   </connection>
@@ -749,7 +749,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>442</x>
-     <y>156</y>
+     <y>135</y>
     </hint>
     <hint type="destinationlabel">
      <x>466</x>
@@ -765,7 +765,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>442</x>
-     <y>184</y>
+     <y>162</y>
     </hint>
     <hint type="destinationlabel">
      <x>468</x>
@@ -789,6 +789,38 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>line_number_edit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>line_number_change()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>387</x>
+     <y>203</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>460</x>
+     <y>205</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>image_slider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>display_select_image()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>533</x>
+     <y>653</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>430</x>
+     <y>657</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <signal>receive_or_send()</signal>
@@ -800,5 +832,7 @@
   <slot>open_connection()</slot>
   <slot>receive_show_in_hex()</slot>
   <slot>save_data_to_file()</slot>
+  <slot>line_number_change()</slot>
+  <slot>display_select_image()</slot>
  </slots>
 </ui>
