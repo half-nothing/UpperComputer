@@ -1,5 +1,6 @@
 from binascii import hexlify
 from concurrent.futures import Future
+from os.path import join
 from threading import Event, Thread
 from time import sleep
 from typing import BinaryIO, Optional, Union
@@ -37,6 +38,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     _line_number: int = 0
     _images_video: list[QPixmap] = []
     _max_frame: int = 10000
+    _auto_save_image_dir: Optional[str] = None
+    _total_save_number: int = 0
+    _receive_raw_data: bytes = b""
 
     def __init__(self) -> None:
         super().__init__()
@@ -89,12 +93,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                             raw_data = ' '.join(raw_data[i:i + 2] for i in range(0, len(raw_data), 2)) + ' '
                 self.receive_data_plain_edit.insertPlainText(raw_data)
             case 1:
-                start = raw_data.find(self._start_marker)
-                end = raw_data.find(self._end_marker)
+                self._receive_raw_data += raw_data
+                start = self._receive_raw_data.find(self._start_marker)
+                end = self._receive_raw_data.find(self._end_marker)
                 if start == -1 or end == -1:
-                    self._logger.error(f"Can not find data mark")
                     return
-                raw_data = raw_data[start + len(self._start_marker): end]
+                data = self._receive_raw_data[start + len(self._start_marker): end]
+                self._receive_raw_data = self._receive_raw_data[end + len(self._end_marker):]
                 length = self.image_display.image_size
                 real_format = QImage.Format.Format_Indexed8
                 if self.image_type == QImage.Format.Format_Mono:
@@ -102,8 +107,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 if self.image_type == QImage.Format.Format_RGB888:
                     real_format = QImage.Format.Format_RGB888
                     length *= 3
-                data = raw_data[:length]
-                raw_data = b""
+                if len(data) != length:
+                    self._logger.error(f"{len(data)} don't match image size {length}")
+                    return
                 if self.image_type == QImage.Format.Format_Mono:
                     data = mono_decode(data)
                 image = QImage(data, self.image_display.image_width, self.image_display.image_height,
@@ -111,8 +117,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 paint = QPainter(image)
                 for i in range(self._line_number):
                     self._lines[i].clear()
-                    line_data = raw_data[:self.image_display.image_height]
-                    raw_data = raw_data[self.image_display.image_height:]
+                    line_data = data[:self.image_display.image_height]
+                    data = data[self.image_display.image_height:]
                     for j in range(self.image_display.image_height):
                         self._lines[i].append(QPointF(int(line_data[j]), j))
                 for i in range(self._line_number):
@@ -123,6 +129,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 if size > self._max_frame:
                     size -= 1
                     del self._images_video[0]
+                if self.auto_save_images:
+                    self._images_video[size - 1].save(
+                        join(self._auto_save_image_dir, f"image{self._total_save_number}.bmp"))
                 self.image_slider.setMaximum(size - 1)
                 self.image_slider.setValue(size - 1)
             case 2:
@@ -391,7 +400,55 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self._line_number = int(num)
 
     def display_select_image(self, value: int) -> None:
+        if len(self._images_video) == 0:
+            return
         self.image_display.display_image(self._images_video[value])
+
+    def save_all_image(self):
+        if len(self._images_video) == 0:
+            return
+        file_path = QFileDialog.getExistingDirectory(self, "选择保存位置", "")
+        if file_path is None:
+            return
+        for i in range(len(self._images_video)):
+            self._images_video[i].save(join(file_path, f"image{i}.bmp"))
+
+    def save_select_image(self):
+        if len(self._images_video) == 0:
+            return
+        file_path, _ = QFileDialog.getSaveFileName(self, "选择保存位置", "",
+                                                   "JPEG文件(*.jpg);;PNG文件(*.png);;位图文件(*.bmp)")
+        if file_path is None:
+            return
+        self._images_video[self.image_slider.value()].save(file_path)
+
+    def delete_all_image(self):
+        self._images_video.clear()
+        self.image_slider.setValue(0)
+        self.image_slider.setMaximum(0)
+
+    def delete_select_image(self):
+        if len(self._images_video) == 0:
+            return
+        del self._images_video[self.image_slider.value()]
+        length = len(self._images_video)
+        self.image_slider.setValue(length - 1)
+        self.image_slider.setMaximum(length - 1)
+
+    def auto_save_image(self, value: bool):
+        if value:
+            file_path = QFileDialog.getExistingDirectory(self, "选择保存位置", "")
+            if file_path is None:
+                self.auto_save_file_check_box.setChecked(False)
+                return
+            self.image_save_path_edit.setEnabled(True)
+            self.image_save_path_edit.setText(file_path)
+        self.image_save_path_edit.clear()
+        self.image_save_path_edit.setEnabled(False)
+
+    @property
+    def auto_save_images(self) -> bool:
+        return self.auto_save_file_check_box.isChecked()
 
     @property
     def show_in_hex(self) -> bool:

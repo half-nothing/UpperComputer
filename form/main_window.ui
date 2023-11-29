@@ -556,8 +556,8 @@
    <slot>scroll_to_bottom()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>417</x>
-     <y>229</y>
+     <x>345</x>
+     <y>92</y>
     </hint>
     <hint type="destinationlabel">
      <x>404</x>
@@ -572,12 +572,12 @@
    <slot>clear()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1142</x>
-     <y>655</y>
+     <x>311</x>
+     <y>92</y>
     </hint>
     <hint type="destinationlabel">
-     <x>650</x>
-     <y>490</y>
+     <x>336</x>
+     <y>83</y>
     </hint>
    </hints>
   </connection>
@@ -604,8 +604,8 @@
    <slot>send_data()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1223</x>
-     <y>655</y>
+     <x>330</x>
+     <y>92</y>
     </hint>
     <hint type="destinationlabel">
      <x>607</x>
@@ -620,8 +620,8 @@
    <slot>send_show_in_hex()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>351</x>
-     <y>653</y>
+     <x>267</x>
+     <y>92</y>
     </hint>
     <hint type="destinationlabel">
      <x>252</x>
@@ -656,8 +656,8 @@
      <y>642</y>
     </hint>
     <hint type="destinationlabel">
-     <x>331</x>
-     <y>236</y>
+     <x>345</x>
+     <y>92</y>
     </hint>
    </hints>
   </connection>
@@ -821,6 +821,86 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>save_all_image_button</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>save_all_image()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>367</x>
+     <y>397</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>465</x>
+     <y>393</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>save_cur_image_button</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>save_select_image()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>407</x>
+     <y>362</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>462</x>
+     <y>365</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>delete_all_image_button</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>delete_all_image()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>363</x>
+     <y>338</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>466</x>
+     <y>334</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>delete_cur_image_button</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>delete_select_image()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>332</x>
+     <y>308</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>464</x>
+     <y>310</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>auto_save_file_check_box</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>auto_save_image()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>294</x>
+     <y>256</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>457</x>
+     <y>257</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <signal>receive_or_send()</signal>
@@ -834,5 +914,10 @@
   <slot>save_data_to_file()</slot>
   <slot>line_number_change()</slot>
   <slot>display_select_image()</slot>
+  <slot>save_all_image()</slot>
+  <slot>save_select_image()</slot>
+  <slot>delete_all_image()</slot>
+  <slot>delete_select_image()</slot>
+  <slot>auto_save_image()</slot>
  </slots>
 </ui>
