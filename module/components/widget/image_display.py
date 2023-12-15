@@ -119,15 +119,24 @@ class ImageDisplay(QWidget, Ui_ImageDisplay):
         self.repaint()
 
     def image_height_change(self, height: str):
-        self.image_height = int(height)
+        try:
+            self.image_height = int(height)
+        except ValueError:
+            self.image_height = 0
 
     def image_width_change(self, width: str):
-        self.image_width = int(width)
+        try:
+            self.image_width = int(width)
+        except ValueError:
+            self.image_width = 0
 
     def pix_per_point_change(self, pix_per_point: str):
-        if pix_per_point == '':
-            return
-        self._width_per_pix_base = int(pix_per_point)
+        try:
+            self._width_per_pix_base = int(pix_per_point)
+        except ValueError:
+            self._width_per_pix_base = 4
+        if self._width_per_pix_base < 0:
+            self._width_per_pix_base = -self._width_per_pix_base
         self._width_per_pix = self._width_per_pix_base * self._zoom
         self.repaint()
 

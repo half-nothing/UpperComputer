@@ -24,7 +24,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     _logger: Logger = Logger("MainWindow")
     _receive_in_hex: bool = False
     _send_in_hex: bool = False
-    _items = ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', ' ')
+    _items: tuple[str] = ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', ' ')
     _serial: Optional[SerialManager] = None
     _serial_read_data_thread: Optional[Future] = None
     _serial_read_data_thread_alive: Event = Event()
@@ -33,6 +33,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     _tcp_socket: Optional[Union[TCPClient, TCPServer]] = None
     _start_marker: bytes = b"\x48\x41\x4C\x46"
     _end_marker: bytes = b"\x46\x4C\x41\x48"
+    _line_marker: bytes = b"\x48\x41\x41\x48"
     _global_color: list[Qt.GlobalColor] = [Qt.GlobalColor.red, Qt.GlobalColor.green, Qt.GlobalColor.blue]
     _lines: list[QPolygonF] = []
     _line_number: int = 0
@@ -49,7 +50,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def save_data_to_file(self, status: bool):
         if status:
-            file_path, _ = QFileDialog.getSaveFileName(self, "选择保存位置", "", "所有文件 (*.*)")
+            file_path, _ = QFileDialog.getSaveFileName(self, "选择保存位置", "",
+                                                       "文本文件(*.txt);;二进制文件(*.dat;*.data;*.bin);;所有文件 (*.*)")
             if file_path:
                 self.file_path_edit.setEnabled(True)
                 self.file_path_edit.setText(file_path)
@@ -67,7 +69,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             res_data = b""
             binary_sequence = bin(int(hexlify(mono_data), 16))[2:]
             for i in range(len(binary_sequence)):
-                res_data += "\xFF" if binary_sequence[i] == "1" else "\x00"
+                res_data += b"\xFF" if binary_sequence[i] == "1" else b"\x00"
             return res_data
 
         if not raw_data:
@@ -102,8 +104,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self._receive_raw_data = self._receive_raw_data[end + len(self._end_marker):]
                 length = self.image_display.image_size
                 real_format = QImage.Format.Format_Indexed8
+                line_data: bytes = b""
+                if self._line_number:
+                    line_marker = data.find(self._line_marker)
+                    if line_marker == -1:
+                        self._logger.error(f"Can't find line marker")
+                        return
+                    line_data = data[line_marker + len(self._line_marker):]
+                    if len(line_data) != self.image_display.image_height * self._line_number:
+                        self._logger.error(f"Line data length error")
+                        return
+                    data = data[:line_marker]
                 if self.image_type == QImage.Format.Format_Mono:
-                    length /= 8
+                    length = round(length / 8)
                 if self.image_type == QImage.Format.Format_RGB888:
                     real_format = QImage.Format.Format_RGB888
                     length *= 3
@@ -114,16 +127,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     data = mono_decode(data)
                 image = QImage(data, self.image_display.image_width, self.image_display.image_height,
                                real_format).convertToFormat(QImage.Format.Format_RGB888)
-                paint = QPainter(image)
-                for i in range(self._line_number):
-                    self._lines[i].clear()
-                    line_data = data[:self.image_display.image_height]
-                    data = data[self.image_display.image_height:]
-                    for j in range(self.image_display.image_height):
-                        self._lines[i].append(QPointF(int(line_data[j]), j))
-                for i in range(self._line_number):
-                    paint.setPen(QPen(self._global_color[i], 1))
-                    paint.drawPoints(self._lines[i])
+                if self._line_number:
+                    paint = QPainter(image)
+                    for i in range(self._line_number):
+                        if len(self._lines) > i:
+                            self._lines[i].clear()
+                        else:
+                            self._lines.append(QPolygonF())
+                        for j in range(self.image_display.image_height):
+                            self._lines[i].append(QPointF(int(line_data[j]), j))
+                    for i in range(self._line_number):
+                        paint.setPen(QPen(self._global_color[i], 1))
+                        paint.drawPoints(self._lines[i])
+                    paint.end()
                 self._images_video.append(QPixmap.fromImage(image))
                 size = len(self._images_video)
                 if size > self._max_frame:
@@ -132,8 +148,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 if self.auto_save_images:
                     self._images_video[size - 1].save(
                         join(self._auto_save_image_dir, f"image{self._total_save_number}.bmp"))
-                self.image_slider.setMaximum(size - 1)
-                self.image_slider.setValue(size - 1)
+                self.image_slider.setMaximum(size)
+                self.image_slider.setValue(size)
             case 2:
                 pass
 
@@ -402,7 +418,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def display_select_image(self, value: int) -> None:
         if len(self._images_video) == 0:
             return
-        self.image_display.display_image(self._images_video[value])
+        self.image_display.display_image(self._images_video[value - 1])
 
     def save_all_image(self):
         if len(self._images_video) == 0:
@@ -420,7 +436,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                                    "JPEG文件(*.jpg);;PNG文件(*.png);;位图文件(*.bmp)")
         if file_path is None:
             return
-        self._images_video[self.image_slider.value()].save(file_path)
+        self._images_video[self.image_slider.value() - 1].save(file_path)
 
     def delete_all_image(self):
         self._images_video.clear()
@@ -430,7 +446,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def delete_select_image(self):
         if len(self._images_video) == 0:
             return
-        del self._images_video[self.image_slider.value()]
+        del self._images_video[self.image_slider.value() - 1]
         length = len(self._images_video)
         self.image_slider.setValue(length - 1)
         self.image_slider.setMaximum(length - 1)
@@ -441,10 +457,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             if file_path is None:
                 self.auto_save_file_check_box.setChecked(False)
                 return
+            self._auto_save_image_dir = file_path
             self.image_save_path_edit.setEnabled(True)
             self.image_save_path_edit.setText(file_path)
+            return
         self.image_save_path_edit.clear()
         self.image_save_path_edit.setEnabled(False)
+
+    def reset_data(self):
+        self._total_save_number = 0
+        self._receive_raw_data = b""
 
     @property
     def auto_save_images(self) -> bool:

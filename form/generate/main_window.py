@@ -265,6 +265,7 @@ class Ui_MainWindow(object):
         self.delete_all_image_button.clicked.connect(MainWindow.delete_all_image) # type: ignore
         self.delete_cur_image_button.clicked.connect(MainWindow.delete_select_image) # type: ignore
         self.auto_save_file_check_box.clicked.connect(MainWindow.auto_save_image) # type: ignore
+        self.clear_data_button.clicked.connect(MainWindow.reset_data) # type: ignore
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
